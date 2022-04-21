@@ -1,0 +1,13 @@
+Acceder desde la terminal a postgres
+ sudo -u postgres psql 
+
+Crear una base de datos 
+  createdb "nombre de la base"
+
+Enlistar las bases de datos 
+  \l 
+
+Usar una base de datos 
+  \c "nombre de la base"
+
+Crear una tabla 
