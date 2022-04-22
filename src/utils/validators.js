@@ -35,7 +35,7 @@ const cities = Joi.string().valid(
   'Yucatán',
   'Zacatecas',
   'Extranjero',
-).killHtml();
+);
 
 module.exports = {
   cities,
