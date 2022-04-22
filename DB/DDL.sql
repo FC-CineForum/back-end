@@ -153,7 +153,7 @@ CREATE TABLE follow_celebrity (
     ON UPDATE CASCADE
 );
 
-CREATE TABLE movie_role (
+CREATE TABLE movie_roles (
   id_celebrity INT NOT NULL,
   id_entry INT NOT NULL,
   PRIMARY KEY (id_celebrity, id_entry),
@@ -170,10 +170,10 @@ CREATE TABLE movie_role (
 CREATE TABLE roles (
   id_celebrity INT NOT NULL,
   id_entry INT NOT NULL,
-  rol VARCHAR (60) NOT NULL CHECK (rol <> ''),
+  role VARCHAR (60) NOT NULL CHECK (rol <> ''),
   PRIMARY KEY (id_celebrity, id_entry, rol),
   FOREIGN KEY (id_celebrity, id_entry)
-    REFERENCES movie_role (id_celebrity, id_entry)
+    REFERENCES movie_roles (id_celebrity, id_entry)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
