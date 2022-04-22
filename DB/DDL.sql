@@ -1,6 +1,5 @@
 -- DROP DATABASE IF EXISTS cineforum;
 -- CREATE DATABASE cineforum;
-drop schema public cascade; create schema public;
 
 -- USERS
 
