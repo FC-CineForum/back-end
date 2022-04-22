@@ -45,8 +45,8 @@ CREATE TABLE follow_user (
 CREATE TABLE report_user (
   username_reporter VARCHAR (30) NOT NULL,
   username_reportee VARCHAR (30) NOT NULL,
-  motivo VARCHAR (60) NOT NULL CHECK (motivo <> ''),
-  comentario TEXT CHECK (comentario <> ''),
+  reason VARCHAR (60) NOT NULL CHECK (reason <> ''),
+  more_info TEXT CHECK (more_info <> ''),
   PRIMARY KEY (username_reporter, username_reportee),
   FOREIGN KEY (username_reporter)
     REFERENCES users (username)
