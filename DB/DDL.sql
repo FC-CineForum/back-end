@@ -170,8 +170,8 @@ CREATE TABLE movie_roles (
 CREATE TABLE roles (
   id_celebrity INT NOT NULL,
   id_entry INT NOT NULL,
-  role VARCHAR (60) NOT NULL CHECK (rol <> ''),
-  PRIMARY KEY (id_celebrity, id_entry, rol),
+  role VARCHAR (60) NOT NULL CHECK (role <> ''),
+  PRIMARY KEY (id_celebrity, id_entry, role),
   FOREIGN KEY (id_celebrity, id_entry)
     REFERENCES movie_roles (id_celebrity, id_entry)
     ON DELETE CASCADE
