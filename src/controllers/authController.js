@@ -11,21 +11,21 @@ const pool = new Pool({
 
 const signUp = async (req, res) => {
   const { 
-    nickname, email, country, birthDate, isPublic, avatar, password, 
-    name, firstLastname, secondLastname
+    username, email, country, birthDate, isPublic, avatar, password, 
+    name, lastName
   } = req.body;
 
   const userExists = await pool.query(
-    'SELECT * FROM usuario WHERE correo = $1', [email] 
+    'SELECT * FROM users WHERE email = $1', [email] 
     );
   if (userExists.rowCount === 0) {
-    const hash = await bcrypt.hash(password, 10);
-    const newUser = await pool.query(`INSERT INTO usuario 
-    (alias, correo, residencia, publico, fecha_nacimiento, 
-      foto_perfil, contrasenia, nombre, paterno, materno) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, 
-    [nickname, email, country, isPublic, birthDate, avatar, hash, 
-      name, firstLastname, secondLastname]);
+    const hash = await bcrypt.hash(password, 10); 
+    const newUser = await pool.query(`INSERT INTO users 
+    (username, email, country, is_public, date_of_birth, 
+      avatar, password, name, last_name) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, 
+    [username, email, country, isPublic, birthDate, avatar, hash, 
+      name, lastName]);
     return res.status(200).json({ 
       Message: 'User was created successfully' 
     }); 
@@ -39,14 +39,14 @@ const logIn = async (req, res) => {
   const { email, password } = req.body;
   if  (email && password) {
     const user = await pool.query(
-      'SELECT * FROM usuario u WHERE u.correo = $1', [email]
+      'SELECT * FROM users u WHERE u.email = $1', [email]
     );
     if (user.rowCount === 1) {
-      const isMatch = await bcrypt.compare(password, user.rows[0].contrasenia);
+      const isMatch = await bcrypt.compare(password, user.rows[0].password);
       if (isMatch) {
-        req.session.user = {
-          username: user.rows[0].alias,
-          avatar: user.rows[0].foto_perfil,
+        req.user = {
+          username: user.rows[0].username,
+          avatar: user.rows[0].avatar,
         };
         return res.status(200).json({
           Message: 'User logged in successfully'
