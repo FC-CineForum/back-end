@@ -11,7 +11,7 @@ module.exports = {
       country: cities.required(),
       birthDate: Joi.string().max(10).required(), //TODO: validate date
       isPublic: Joi.boolean().required(),
-      avatar: Joi.string().required(),
+      avatar: Joi.string().optional(),
       password: Joi.string().required(),
       name: Joi.string().required(),
       firstLastname: Joi.string().required(),

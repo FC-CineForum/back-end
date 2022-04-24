@@ -8,4 +8,7 @@ const router = express.Router();
 router.post('/signUp',  
 authValidator.signUp, authController.signUp);
 
+router.post('/logIn',  
+authValidator.logIn, authController.logIn);
+
 module.exports = router;
