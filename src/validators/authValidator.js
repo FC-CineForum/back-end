@@ -5,7 +5,7 @@ module.exports = {
 
   signUp: celebrate({
     [Segments.BODY]: Joi.object().keys({
-      userName: Joi.string().min(8).max(25).required(),
+      username: Joi.string().min(8).max(25).required(),
       biography: Joi.string().min(8).max(25).optional(),  
       email: Joi.string().required(),
       country: cities.required(),

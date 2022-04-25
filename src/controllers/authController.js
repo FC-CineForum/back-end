@@ -11,7 +11,7 @@ const pool = new Pool({
 
 const signUp = async (req, res) => {
   const { 
-    userName, email, country, birthDate, isPublic, avatar, password, 
+    username, email, country, birthDate, isPublic, avatar, password, 
     name, lastName
   } = req.body;
 
@@ -21,10 +21,10 @@ const signUp = async (req, res) => {
   if (userExists.rowCount === 0) {
     const hash = await bcrypt.hash(password, 10); 
     const newUser = await pool.query(`INSERT INTO users 
-    (userName, email, country, is_public, date_of_birth, 
+    (username, email, country, is_public, date_of_birth, 
       avatar, password, name, last_name) 
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, 
-    [userName, email, country, isPublic, birthDate, avatar, hash, 
+    [username, email, country, isPublic, birthDate, avatar, hash, 
       name, lastName]);
     return res.status(200).json({ 
       Message: 'User was created successfully' 
@@ -49,7 +49,7 @@ const logIn = async (req, res) => {
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
     return res.status(200).json({ 
-      userName: user.rows[0].userName,
+      username: user.rows[0].username,
       avatar: user.rows[0].avatar,
       token: "accessToken"
     });
