@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 app.use(helmet()); 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:8084",
     credentials: true,
   })
 );
@@ -29,4 +29,4 @@ app.get('/', (_, res) => {
 
 app.use('/cineforum', require('./routes'));
 
-module.exports = { app, PORT};
+module.exports = { app, PORT };

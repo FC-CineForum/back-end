@@ -37,6 +37,7 @@ const signUp = async (req, res) => {
 
 const logIn = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
   if  (!email || !password) return res.status(401).json({
     Message: 'Email and password are required'});
     const user = await pool.query(
