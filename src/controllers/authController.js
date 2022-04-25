@@ -49,7 +49,8 @@ const logIn = async (req, res) => {
   if (isMatch) {
     return res.status(200).json({ 
       userName: user.rows[0].userName,
-      avatar: user.rows[0].avatar
+      avatar: user.rows[0].avatar,
+      token: "accessToken"
     });
   }
   return res.status(401).json({
