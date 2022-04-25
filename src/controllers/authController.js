@@ -11,7 +11,7 @@ const pool = new Pool({
 
 const signUp = async (req, res) => {
   const { 
-    username, email, country, birthDate, isPublic, avatar, password, 
+    userName, email, country, birthDate, isPublic, avatar, password, 
     name, lastName
   } = req.body;
 
@@ -21,10 +21,10 @@ const signUp = async (req, res) => {
   if (userExists.rowCount === 0) {
     const hash = await bcrypt.hash(password, 10); 
     const newUser = await pool.query(`INSERT INTO users 
-    (username, email, country, is_public, date_of_birth, 
+    (userName, email, country, is_public, date_of_birth, 
       avatar, password, name, last_name) 
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, 
-    [username, email, country, isPublic, birthDate, avatar, hash, 
+    [userName, email, country, isPublic, birthDate, avatar, hash, 
       name, lastName]);
     return res.status(200).json({ 
       Message: 'User was created successfully' 
@@ -37,31 +37,23 @@ const signUp = async (req, res) => {
 
 const logIn = async (req, res) => {
   const { email, password } = req.body;
-  if  (email && password) {
+  if  (!email || !password) return res.status(401).json({
+    Message: 'Email and password are required'});
     const user = await pool.query(
       'SELECT * FROM users u WHERE u.email = $1', [email]
     );
-    if (user.rowCount === 1) {
-      const isMatch = await bcrypt.compare(password, user.rows[0].password);
-      if (isMatch) {
-        req.user = {
-          username: user.rows[0].username,
-          avatar: user.rows[0].avatar,
-        };
-        return res.status(200).json({
-          Message: 'User logged in successfully'
-        });
-      }
-      return res.status(401).json({
-        Message: 'Password or email is incorrect'
-      });
-    }
-    return res.status(401).json({
+    if (user.rowCount !== 1) return res.status(401).json({
       Message: 'User not found'
+    });
+  const isMatch = await bcrypt.compare(password, user.rows[0].password);
+  if (isMatch) {
+    return res.status(200).json({ 
+      userName: user.rows[0].userName,
+      avatar: user.rows[0].avatar
     });
   }
   return res.status(401).json({
-    Message: 'Email and password are required'
+    Message: 'Password or email is incorrect'
   });
 }
  
