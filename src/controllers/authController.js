@@ -48,7 +48,7 @@ const logIn = async (req, res) => {
     });
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
-    const token = authMiddleware.createToken(user.rows[0]);
+    const token = authMiddleware.createTokenLogin(user.rows[0]);
     return res.status(200).json({ 
       token: token 
     });
@@ -57,7 +57,7 @@ const logIn = async (req, res) => {
     message: 'Password or email is incorrect'
   });
 }
- 
+
 module.exports = {
   signUp,
   logIn,

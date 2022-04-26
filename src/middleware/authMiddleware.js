@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken');
-const { JWT_TOKEN_LOGIN } = process.env;
+const { 
+  JWT_TOKEN_LOGIN,
+  JWT_TOKEN_EMAIL,
+} = process.env;
 
-const createToken = (user) => {
+const createTokenLogin = (user) => {
   try {
     const token = jwt.sign({
       username: user.username,
@@ -15,6 +18,21 @@ const createToken = (user) => {
   }
 };
 
+const createTokenEmail = (user) => {
+  try {
+    const token = jwt.sign({
+      username: user.username,
+      email: user.email,
+    }, JWT_TOKEN_EMAIL, { expiresIn: '48h' });
+    return token;
+  } catch (error) {
+    return res.status(400).json({ 
+      message: 'Create token failed' 
+    }); 
+  }
+};
+
 module.exports = {
-  createToken,
+  createTokenLogin,
+  createTokenEmail,
 }
