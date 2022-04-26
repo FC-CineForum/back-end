@@ -15,9 +15,9 @@ const get = async (req, res) => {
     'SELECT * FROM users WHERE username = $1', [username]
   );
   if (user.rowCount === 1) {
-    res.status(200).json(user);
-  }
-  res.status(404).json({
+    return res.status(200).json(user);
+  } 
+  return res.status(404).json({
     message: 'User not found'
   });
 }
