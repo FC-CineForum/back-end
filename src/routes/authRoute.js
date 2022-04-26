@@ -6,8 +6,10 @@ const { authController } = require('../controllers');
 const router = express.Router();
 
 router.post('/signUp',  
-//authValidator.signUp, 
-authController.signUp);
+authValidator.signUp, authController.signUp);
+
+router.get('/get/:id', 
+authValidator.get, authController.get);
 
 router.post('/logIn',  
 authValidator.logIn, authController.logIn);

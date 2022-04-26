@@ -19,6 +19,12 @@ module.exports = {
     }), 
   }),
 
+  get: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      username: Joi.string().required(),
+    }),
+  }),
+
   logIn: celebrate({
     [Segments.BODY]: Joi.object().keys({
       email: Joi.string().max(50).required(),
