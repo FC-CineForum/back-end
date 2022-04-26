@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
+const { authMiddleware } = require('../middleware/');
 
 const pool = new Pool({
   host: 'localhost',
@@ -7,20 +8,7 @@ const pool = new Pool({
   password: 'password',
   database: 'cineforum',
   port: 5432
-})
-
-const get = async (req, res) => {
-  const { username } = req.params;
-  const user = await pool.query(
-    'SELECT * FROM users WHERE username = $1', [username]
-  );
-  if (user.rowCount === 1) {
-    return res.status(200).json(user);
-  } 
-  return res.status(404).json({
-    message: 'User not found'
-  });
-}
+});
 
 const signUp = async (req, res) => {
   const { 
@@ -50,7 +38,6 @@ const signUp = async (req, res) => {
 
 const logIn = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   if  (!email || !password) return res.status(401).json({
     message: 'Email and password are required'});
     const user = await pool.query(
@@ -61,10 +48,9 @@ const logIn = async (req, res) => {
     });
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
+    const token = authMiddleware.createToken(user.rows[0]);
     return res.status(200).json({ 
-      username: user.rows[0].username,
-      avatar: user.rows[0].avatar,
-      token: "accessToken"
+      token: token 
     });
   }
   return res.status(401).json({
@@ -75,5 +61,4 @@ const logIn = async (req, res) => {
 module.exports = {
   signUp,
   logIn,
-  get,
 } 
