@@ -3,7 +3,7 @@ const { app } = require('../../src/index');
 const request = supertest(app);
 const { user } = require('./user.json');
 
-test('/SignUp', async () => {
+test('/cineforum/signUp', async () => {
   const response = await request 
   .post('cineforum/signUp')
   .send(user)

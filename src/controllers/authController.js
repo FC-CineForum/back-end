@@ -9,6 +9,19 @@ const pool = new Pool({
   port: 5432
 })
 
+const get = async (req, res) => {
+  const { id } = req.params;
+  const user = await pool.query(
+    'SELECT * FROM users WHERE id = $1', [id]
+  );
+  if (user.rowCount === 1) {
+    res.status(200).json(user);
+  }
+  res.status(404).json({
+    message: 'User not found'
+  });
+}
+
 const signUp = async (req, res) => {
   const { 
     username, email, country, birthDate, isPublic, avatar, password, 
@@ -27,11 +40,11 @@ const signUp = async (req, res) => {
     [username, email, country, isPublic, birthDate, avatar, hash, 
       name, lastName]);
     return res.status(200).json({ 
-      Message: 'User was created successfully' 
+      message: 'User was created successfully' 
     }); 
   }
   return res.status(401).json({ 
-    Message: 'The email is already taken!' 
+    message: 'The email is already taken!' 
   });
 }
 
@@ -39,12 +52,12 @@ const logIn = async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
   if  (!email || !password) return res.status(401).json({
-    Message: 'Email and password are required'});
+    message: 'Email and password are required'});
     const user = await pool.query(
       'SELECT * FROM users u WHERE u.email = $1', [email]
     );
     if (user.rowCount !== 1) return res.status(401).json({
-      Message: 'User not found'
+      message: 'User not found'
     });
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
@@ -55,7 +68,7 @@ const logIn = async (req, res) => {
     });
   }
   return res.status(401).json({
-    Message: 'Password or email is incorrect'
+    message: 'Password or email is incorrect'
   });
 }
  
