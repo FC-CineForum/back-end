@@ -7,7 +7,7 @@ module.exports = {
     [Segments.BODY]: Joi.object().keys({
       username: Joi.string().min(8).max(25).required(),
       biography: Joi.string().min(8).max(25).optional(),  
-      email: Joi.string().required(),
+      email: Joi.string().email().required(),
       country: cities.required(),
       isPublic: Joi.boolean().required(),
       birthDate: Joi.string().max(10).required(), //TODO: validate date
