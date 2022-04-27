@@ -11,7 +11,7 @@ const createTokenLogin = (user) => {
       avatar: user.avatar,      
     }, JWT_TOKEN_LOGIN, { expiresIn: '24h' });
     return token;
-  } catch (error) {
+  } catch (error) { 
     console.log('Create token failed');
   }
 };

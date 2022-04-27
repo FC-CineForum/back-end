@@ -1,11 +1,12 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const { authMiddleware } = require('../middleware/');
+const { DB_PASSWORD } = process.env;
 
 const pool = new Pool({
   host: 'localhost',
   user: 'postgres',
-  password: 'password',
+  password: `${DB_PASSWORD}`,
   database: 'cineforum',
   port: 5432
 });
@@ -21,7 +22,7 @@ const signUp = async (req, res) => {
     );
   if (userExists.rowCount === 0) {
     const hash = await bcrypt.hash(password, 10); 
-    const newUser = await pool.query(`INSERT INTO users 
+    await pool.query(`INSERT INTO users 
     (username, email, country, is_public, date_of_birth, 
       avatar, password, name, last_name) 
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, 
@@ -48,9 +49,16 @@ const logIn = async (req, res) => {
     });
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
-    const token = authMiddleware.createTokenLogin(user.rows[0]);
+    // req.session.user = {
+    //   username: user.rows[0].username,
+    //   avatar: user.rows[0].avatar,
+    // }
+    
     return res.status(200).json({ 
-      token: token 
+      message: 'User logged in successfully',
+      avatar: user.rows[0].avatar,
+      username: user.rows[0].username,
+      token: 'token'
     });
   }
   return res.status(401).json({
