@@ -12,9 +12,7 @@ const createTokenLogin = (user) => {
     }, JWT_TOKEN_LOGIN, { expiresIn: '24h' });
     return token;
   } catch (error) {
-    return res.status(400).json({ 
-      message: 'Create token failed' 
-    }); 
+    console.log('Create token failed');
   }
 };
 
@@ -26,9 +24,7 @@ const createTokenEmail = (user) => {
     }, JWT_TOKEN_EMAIL, { expiresIn: '48h' });
     return token;
   } catch (error) {
-    return res.status(400).json({ 
-      message: 'Create token failed' 
-    }); 
+    console.log('Create token failed');
   }
 };
 
