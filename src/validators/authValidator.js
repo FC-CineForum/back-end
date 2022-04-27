@@ -25,4 +25,10 @@ module.exports = {
       password: Joi.string().min(2).required(),
     }),
   }),
+
+  verifyAccount: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      token: Joi.string().required(),
+    }),
+  }),
 }

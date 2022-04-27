@@ -4,31 +4,51 @@ const {
   JWT_TOKEN_EMAIL,
 } = process.env;
 
-const createTokenLogin = (user) => {
+const generateTokenLogin = (username, avatar) => {
   try {
     const token = jwt.sign({
-      username: user.username,
-      avatar: user.avatar,      
-    }, JWT_TOKEN_LOGIN, { expiresIn: '24h' });
+      username: username,
+      avatar: avatar,      
+    }, JWT_TOKEN_LOGIN, { expiresIn: '7d' });
     return token;
   } catch (error) { 
     console.log('Create token failed');
   }
 };
 
-const createTokenEmail = (user) => {
+const generateTokenEmail = (username, email) => {
   try {
     const token = jwt.sign({
-      username: user.username,
-      email: user.email,
-    }, JWT_TOKEN_EMAIL, { expiresIn: '48h' });
+      username: username,
+      email: email,
+    }, JWT_TOKEN_EMAIL, { expiresIn: '24h' });
     return token;
   } catch (error) {
     console.log('Create token failed');
   }
 };
 
+const verifyTokenLogin = (token) => {
+  try {
+    const decoded = jwt.verify(token, JWT_TOKEN_LOGIN);
+    return decoded;
+    } catch (error) {
+      console.log('Verify token failed');
+    }
+  };
+
+  const verifyTokenEmail = (token) => {
+    try {
+      const decoded = jwt.verify(token, JWT_TOKEN_EMAIL);
+      return decoded;
+    } catch (error) {
+      console.log('Verify token failed');
+    }
+  };
+
 module.exports = {
-  createTokenLogin,
-  createTokenEmail,
+  generateTokenLogin,
+  generateTokenEmail,
+  verifyTokenLogin,
+  verifyTokenEmail,
 }
