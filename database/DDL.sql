@@ -14,7 +14,9 @@ CREATE TABLE users (
   password VARCHAR (60) NOT NULL CHECK (password <> ''),
   name VARCHAR (60) NOT NULL CHECK (name <> ''),
   last_name VARCHAR (60) NOT NULL CHECK (last_name <> ''),
-  deleted BOOLEAN NOT NULL DEFAULT FALSE
+  deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  token VARCHAR (280),
+  is_verified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE administrator (
