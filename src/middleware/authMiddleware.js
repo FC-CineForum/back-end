@@ -1,8 +1,20 @@
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const { 
   JWT_TOKEN_LOGIN,
   JWT_TOKEN_EMAIL,
+  EMAIL_PASSWORD,
 } = process.env;
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'cineforum.noreply@gmail.com',
+    pass: `${EMAIL_PASSWORD}`,
+  },
+});
 
 const generateTokenLogin = (username, avatar) => {
   try {
@@ -16,11 +28,10 @@ const generateTokenLogin = (username, avatar) => {
   }
 };
 
-const generateTokenEmail = (username, email) => {
+const generateTokenEmail = (username) => {
   try {
     const token = jwt.sign({
       username: username,
-      email: email,
     }, JWT_TOKEN_EMAIL, { expiresIn: '24h' });
     return token;
   } catch (error) {
@@ -37,12 +48,27 @@ const verifyTokenLogin = (token) => {
     }
   };
 
-  const verifyTokenEmail = (token) => {
-    try {
-      const decoded = jwt.verify(token, JWT_TOKEN_EMAIL);
-      return decoded;
+const verifyTokenEmail = (token) => {
+  try {
+    const decoded = jwt.verify(token, JWT_TOKEN_EMAIL);
+    return decoded;
     } catch (error) {
       console.log('Verify token failed');
+    }
+  };
+
+const sendConfirmationEmail =  async(email, token) => {
+  try {
+    transporter.sendMail({
+      from: `Verify account <noreply@cineforum.com>`,
+      to: email,
+      subject: 'Verify your account',
+      html: `<p>Please click on the link below to verify your account</p>
+      <a href="http://localhost:3000/verifyAccount/${token}">
+      http://localhost:3000/verifyAccount/${token}</a>`,
+    });
+    } catch (error) {
+      console.log('Send confirmation email failed');
     }
   };
 
@@ -51,4 +77,5 @@ module.exports = {
   generateTokenEmail,
   verifyTokenLogin,
   verifyTokenEmail,
+  sendConfirmationEmail,
 }

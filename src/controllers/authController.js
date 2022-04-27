@@ -22,13 +22,14 @@ const signUp = async (req, res) => {
     );
   if (userExists.rowCount === 0) { 
     const hash = await bcrypt.hash(password, 10); 
-    const token = authMiddleware.generateTokenEmail(username, email);
+    const token = authMiddleware.generateTokenEmail(username);
     await pool.query(`INSERT INTO users 
     (username, email, country, is_public, date_of_birth, 
       avatar, password, name, last_name, token) 
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, 
     [username, email, country, isPublic, birthDate, avatar, hash, 
-      name, lastName, token]);
+      name, lastName, token]);  
+    await authMiddleware.sendConfirmationEmail(email, token);
     return res.status(200).json({ 
       message: 'User was created successfully' 
     }); 
