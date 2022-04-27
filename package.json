@@ -2,10 +2,10 @@
   "name": "back-end",
   "version": "1.0.0",
   "description": "FC Cineforum's back-end",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "jest --runInBand --verbose --coverage",
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon src/server/index.js",
     "kill": "kill -9 $(lsof -t -i:3000)"
   },
   "repository": {
