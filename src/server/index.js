@@ -13,9 +13,22 @@ console.log('Server is running on port:', PORT);
 
 app.use(morgan('dev'));
 app.use(helmet()); 
+
+const whitelist = [
+  'http://localhost:3000', 
+  'http://localhost:8081',
+];
+
 app.use(
   cors({
-    origin: "http://localhost:8084",
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1 || !origin) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+      console.log(origin);
+    },
     credentials: true,
   })
 );
