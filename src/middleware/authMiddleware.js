@@ -4,6 +4,7 @@ const {
   JWT_TOKEN_LOGIN,
   JWT_TOKEN_EMAIL,
   EMAIL_PASSWORD,
+  FRONT_URL
 } = process.env;
 
 const transporter = nodemailer.createTransport({

@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const app = express();
 
-const { PORT } = process.env;
+const { PORT, FRONT_URL} = process.env;
 
 app.listen(PORT);
 console.log('Server is running on port:', PORT);
@@ -16,7 +16,7 @@ app.use(helmet());
 
 const whitelist = [
   'http://localhost:3000', 
-  'http://localhost:8081',
+  FRONT_URL,
 ];
 
 app.use(
