@@ -31,4 +31,10 @@ module.exports = {
       token: Joi.string().required(),
     }),
   }),
+
+  getUser: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      token: Joi.string().required(),
+    }),
+  }),
 }

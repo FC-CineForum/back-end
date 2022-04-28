@@ -84,11 +84,35 @@ const verifyAccount = async (req, res) => {
       message: 'Token expired'
     });
   }
-    
+}
+
+const getUser = async (req, res) => {
+  const { token } = req.params;
+  try {
+    const user = authMiddleware.verifyTokenLogin(token);
+    const userData = await pool.query(
+      `SELECT * FROM users WHERE username = $1`,
+      [user.username]
+    );
+    if (userData.rowCount === 1) {
+      return res.status(200).json({
+        message: 'User data',
+        user: user, 
+      });
+    }
+    return res.status(404).json({
+      message: 'User not found'
+    });
+  } catch (error) {
+    return res.status(401).json({
+      message: 'Token expired'
+    });
   }
+}
 
 module.exports = {
   signUp,
   logIn,
   verifyAccount,
+  getUser,
 } 

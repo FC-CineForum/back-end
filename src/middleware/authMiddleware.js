@@ -22,7 +22,7 @@ const generateTokenLogin = (username, avatar) => {
     const token = jwt.sign({
       username: username,
       avatar: avatar,      
-    }, JWT_TOKEN_LOGIN, { expiresIn: '7d' });
+    }, JWT_TOKEN_LOGIN);
     return token;
   } catch (error) { 
     console.log('Create token failed');
