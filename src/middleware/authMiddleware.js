@@ -64,7 +64,12 @@ const sendConfirmationEmail =  async(email, token) => {
       from: `Verify account <noreply@cineforum.com>`,
       to: email,
       subject: 'Verify your account',
-      html: `<p>Please click on <a href="http://localhost:8080/verifyAccount?token=${token}"> the next link to verify your account </a> </p>`
+      html: `
+      <p> Please click on
+        <a href="http://localhost:8080/verifyAccount?token=${token}"> 
+          the next link to verify your account 
+        </a> 
+      </p>`
     });
     } catch (error) {
       console.log('Send confirmation email failed');
