@@ -87,7 +87,9 @@ const verifyAccount = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-  const { token } = req.params;
+  const bearerHeaders = req.headers["authorization"];
+  const token = bearerHeaders.split(' ')[1];
+  console.log(token);
   try {
     const user = authMiddleware.verifyTokenLogin(token);
     const userData = await pool.query(
