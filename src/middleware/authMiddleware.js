@@ -22,7 +22,7 @@ const generateTokenLogin = (username, avatar) => {
     const token = jwt.sign({
       username: username,
       avatar: avatar,      
-    }, JWT_TOKEN_LOGIN, { expiresIn: '7d' });
+    }, JWT_TOKEN_LOGIN);
     return token;
   } catch (error) { 
     console.log('Create token failed');
@@ -64,7 +64,12 @@ const sendConfirmationEmail =  async(email, token) => {
       from: `Verify account <noreply@cineforum.com>`,
       to: email,
       subject: 'Verify your account',
-      html: `<p>Please click on <a href="http://localhost:8080/verifyAccount?token=${token}"> the next link to verify your account </a> </p>`
+      html: `
+      <p> Please click on
+        <a href="http://localhost:8080/verifyAccount?token=${token}"> 
+          the next link to verify your account 
+        </a> 
+      </p>`
     });
     } catch (error) {
       console.log('Send confirmation email failed');
