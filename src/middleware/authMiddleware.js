@@ -19,7 +19,6 @@ const transporter = nodemailer.createTransport({
 
 const generateTokenLogin = (user) => {
   try {
-    console.log('Generate token login', user);
     const token = jwt.sign({
       username: user.username,
       avatar: user.avatar,      
