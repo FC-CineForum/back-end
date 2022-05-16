@@ -10,7 +10,7 @@ module.exports = {
       email: Joi.string().email().required(),
       country: cities.required(),
       isPublic: Joi.boolean().required(),
-      birthDate: Joi.string().max(10).required(), //TODO: validate date
+      birthDate: Joi.string().max(10).required(), 
       avatar: Joi.string().optional(),
       password: Joi.string().required(),
       name: Joi.string().required(),
@@ -26,15 +26,15 @@ module.exports = {
     }),
   }),
 
-  verifyAccount: celebrate({
-    [Segments.QUERY]: Joi.object().keys({
+  auth: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
       token: Joi.string().required(),
     }),
   }),
 
   getUser: celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      token: Joi.string().required(),
-    }),
+    [Segments.HEADERS]: Joi.object().keys({
+      authorization: Joi.string().required(),
+    }).unknown(),
   }),
 }

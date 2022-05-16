@@ -56,6 +56,7 @@ const logIn = async (req, res) => {
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
     const token = authMiddleware.generateTokenLogin(user.rows[0]);  
+    console.log('token', token);
     return res.status(200).json({ 
       message: 'User logged in successfully',
       username: user.rows[0].username,
@@ -69,7 +70,7 @@ const logIn = async (req, res) => {
 }
 
 const verifyAccount = async (req, res) => { 
-  const { token } = req.query;
+  const { token } = req.params;
   try {
     const user = authMiddleware.verifyTokenEmail(token);
     await pool.query(
@@ -87,13 +88,13 @@ const verifyAccount = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-  const bearerHeaders = req.headers["authorization"];
-  const token = bearerHeaders.split(' ')[1];
-  console.log(token);
+  // const bearerHeaders = req.headers["authorization"];
+  // const token = bearerHeaders.split(' ')[1];
+  const token = req.headers["authorization"];
   try {
     const user = authMiddleware.verifyTokenLogin(token);
     const userData = await pool.query(
-      `SELECT * FROM users WHERE username = $1`,
+      `SELECT * FROM users WHERE username = $1`, 
       [user.username]
     );
     if (userData.rowCount === 1) {

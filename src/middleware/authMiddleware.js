@@ -17,11 +17,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const generateTokenLogin = (username, avatar) => {
+const generateTokenLogin = (user) => {
   try {
+    console.log('Generate token login', user);
     const token = jwt.sign({
-      username: username,
-      avatar: avatar,      
+      username: user.username,
+      avatar: user.avatar,      
     }, JWT_TOKEN_LOGIN);
     return token;
   } catch (error) { 

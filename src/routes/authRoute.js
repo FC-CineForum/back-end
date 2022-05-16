@@ -2,7 +2,6 @@ const express = require('express');
 
 const { authValidator } = require('../validators');
 const { authController } = require('../controllers');
-const { route } = require('express/lib/application');
 
 const router = express.Router();
 
@@ -12,11 +11,10 @@ authValidator.signUp, authController.signUp);
 router.post('/logIn',  
 authValidator.logIn, authController.logIn);
 
-router.get('/verifyAccount',  
-authValidator.verifyAccount, authController.verifyAccount);
+router.get('/verifyAccount/:token',  
+authValidator.auth, authController.verifyAccount);
 
-router.get('/getUser',
-//authValidator.getUser,
- authController.getUser);
+router.get('/getUser/',
+authValidator.getUser, authController.getUser);
 
 module.exports = router;
