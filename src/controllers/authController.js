@@ -56,7 +56,6 @@ const logIn = async (req, res) => {
   const isMatch = await bcrypt.compare(password, user.rows[0].password);
   if (isMatch) {
     const token = authMiddleware.generateTokenLogin(user.rows[0]);  
-    console.log('token', token);
     return res.status(200).json({ 
       message: 'User logged in successfully',
       username: user.rows[0].username,
