@@ -101,7 +101,7 @@ CREATE TABLE entry (
   title VARCHAR (60) NOT NULL CHECK (title <> ''),
   synopsis VARCHAR (280) NOT NULL CHECK (synopsis <> ''),
   image TEXT NOT NULL,
-  release DATE NOT NULL,
+  release INT NOT NULL,
   classification VARCHAR (3) NOT NULL CHECK (classification in ('AA', 'A', 'B', 'B15', 'C', 'D')),
   type CHAR (1) NOT NULL CHECK (type IN ('m', 's', 'e'))
 );
