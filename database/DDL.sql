@@ -6,17 +6,27 @@
 CREATE TABLE users (
   username VARCHAR (30) PRIMARY KEY,
   biography VARCHAR (280) CHECK (biography <> ''),
-  email VARCHAR (320) NOT NULL,
+  email VARCHAR (320),
   country VARCHAR (60),
-  is_public BOOLEAN NOT NULL DEFAULT TRUE,
-  date_of_birth DATE NOT NULL CHECK (date_of_birth < CURRENT_DATE),
-  avatar BYTEA NOT NULL,
-  password VARCHAR (60) NOT NULL CHECK (password <> ''),
-  name VARCHAR (60) NOT NULL CHECK (name <> ''),
-  last_name VARCHAR (60) NOT NULL CHECK (last_name <> ''),
-  deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  is_public BOOLEAN DEFAULT TRUE,
+  date_of_birth DATE CHECK (date_of_birth < CURRENT_DATE),
+  avatar BYTEA,
+  password VARCHAR (60) CHECK (password <> ''),
+  name VARCHAR (60) CHECK (name <> ''),
+  last_name VARCHAR (60) CHECK (last_name <> ''),
   token VARCHAR (280),
-  is_verified BOOLEAN NOT NULL DEFAULT FALSE
+  is_verified BOOLEAN DEFAULT FALSE,
+  deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  CONSTRAINT null_entries
+    CHECK (deleted OR 
+            (email IS NOT NULL AND
+             is_public IS NOT NULL AND
+             date_of_birth IS NOT NULL AND
+             avatar IS NOT NULL AND
+             password IS NOT NULL AND
+             name IS NOT NULL AND
+             last_name IS NOT NULL AND
+             is_verified IS NOT NULL))
 );
 
 CREATE TABLE administrator (
