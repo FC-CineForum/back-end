@@ -1,7 +1,7 @@
 /* Inserts a new series into the database */
 CREATE OR REPLACE PROCEDURE 
 insert_series(title VARCHAR (60), synopsis VARCHAR (280), image TEXT, 
-	trailer TEXT, release DATE, classification VARCHAR (3))
+	trailer TEXT, release INT, classification VARCHAR (3))
 AS $$
 DECLARE
   id int;

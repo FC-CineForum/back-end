@@ -1,7 +1,7 @@
 /* Inserts a new episode into the database */
 CREATE OR REPLACE PROCEDURE 
 insert_episode(title VARCHAR (60), synopsis VARCHAR (280), image TEXT, 
-	release DATE, classification VARCHAR (3), id_series INT, season INT, no_ep INT, length INT)
+	release INT, classification VARCHAR (3), id_series INT, season INT, no_ep INT, length INT)
 AS $$
 DECLARE
   id int;

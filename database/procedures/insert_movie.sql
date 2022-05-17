@@ -1,7 +1,7 @@
 /* Inserts a new movie into the database */
 CREATE OR REPLACE PROCEDURE 
 insert_movie(title VARCHAR (60), synopsis VARCHAR (280), image TEXT, 
-	trailer TEXT, release DATE, classification VARCHAR (3), length INT)
+	trailer TEXT, release INT, classification VARCHAR (3), length INT)
 AS $$
 DECLARE
   id int;
