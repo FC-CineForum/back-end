@@ -1,16 +1,15 @@
 /* Inserts a new series into the database */
 CREATE OR REPLACE PROCEDURE 
-insert_series(link VARCHAR (60), image BYTEA, synopsis VARCHAR (280), 
-  title VARCHAR (60), release DATE, clasification VARCHAR (3), 
-  length INT, running BOOLEAN)
+insert_series(title VARCHAR (60), synopsis VARCHAR (280), image TEXT, 
+	trailer TEXT, release DATE, classification VARCHAR (3))
 AS $$
 DECLARE
   id int;
 BEGIN
-  INSERT INTO entry (link, image, synopsis, title, release, clasification, type) 
-    VALUES (link, image, synopsis, title, release, clasification, 's') 
+  INSERT INTO entry (title, synopsis, image, release, classification, type)
+    VALUES (title, synopsis, image, release, classification, 's')
     RETURNING id_entry INTO id;
-  INSERT INTO movie VALUES (id, running);
+  INSERT INTO series VALUES (id, trailer);
 END;
 $$ LANGUAGE plpgsql;
 
