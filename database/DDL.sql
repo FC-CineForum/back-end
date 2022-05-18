@@ -102,7 +102,7 @@ CREATE TABLE entry (
   synopsis VARCHAR (280) NOT NULL CHECK (synopsis <> ''),
   image TEXT NOT NULL,
   release INT NOT NULL,
-  classification VARCHAR (3) NOT NULL CHECK (classification in ('AA', 'A', 'B', 'B15', 'C', 'D')),
+  classification VARCHAR (3) NOT NULL CHECK (classification in ('AA', 'A', 'B', 'B15', 'C', 'D', 'NA')),
   type CHAR (1) NOT NULL CHECK (type IN ('m', 's', 'e'))
 );
 
