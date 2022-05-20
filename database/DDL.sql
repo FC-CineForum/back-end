@@ -6,17 +6,27 @@
 CREATE TABLE users (
   username VARCHAR (30) PRIMARY KEY,
   biography VARCHAR (280) CHECK (biography <> ''),
-  email VARCHAR (320) NOT NULL,
+  email VARCHAR (320),
   country VARCHAR (60),
-  is_public BOOLEAN NOT NULL DEFAULT TRUE,
-  date_of_birth DATE NOT NULL CHECK (date_of_birth < CURRENT_DATE),
-  avatar BYTEA NOT NULL,
-  password VARCHAR (60) NOT NULL CHECK (password <> ''),
-  name VARCHAR (60) NOT NULL CHECK (name <> ''),
-  last_name VARCHAR (60) NOT NULL CHECK (last_name <> ''),
+  is_public BOOLEAN DEFAULT TRUE,
+  date_of_birth DATE CHECK (date_of_birth < CURRENT_DATE),
+  avatar BYTEA,
+  password VARCHAR (60) CHECK (password <> ''),
+  name VARCHAR (60) CHECK (name <> ''),
+  last_name VARCHAR (60) CHECK (last_name <> ''),
   deleted BOOLEAN NOT NULL DEFAULT FALSE,
   token VARCHAR (280),
-  is_verified BOOLEAN NOT NULL DEFAULT FALSE
+  is_verified BOOLEAN DEFAULT FALSE,
+  CONSTRAINT null_entries
+    CHECK (deleted OR 
+            (email IS NOT NULL AND
+             is_public IS NOT NULL AND
+             date_of_birth IS NOT NULL AND
+             avatar IS NOT NULL AND
+             password IS NOT NULL AND
+             name IS NOT NULL AND
+             last_name IS NOT NULL AND
+             is_verified IS NOT NULL))
 );
 
 CREATE TABLE administrator (
@@ -88,17 +98,17 @@ CREATE TABLE messages (
 
 CREATE TABLE entry (
   id_entry SERIAL PRIMARY KEY,
-  link VARCHAR (60) NOT NULL CHECK (link <> ''),
-  image BYTEA NOT NULL,
-  synopsis VARCHAR (280) NOT NULL CHECK (synopsis <> ''),
   title VARCHAR (60) NOT NULL CHECK (title <> ''),
-  release DATE NOT NULL,
-  clasification VARCHAR (3) NOT NULL CHECK (clasification in ('AA', 'A', 'B', 'B15', 'C', 'D')),
+  synopsis VARCHAR (280) NOT NULL CHECK (synopsis <> ''),
+  image TEXT NOT NULL,
+  release INT NOT NULL,
+  classification VARCHAR (3) NOT NULL CHECK (classification in ('AA', 'A', 'B', 'B15', 'C', 'D', 'NA')),
   type CHAR (1) NOT NULL CHECK (type IN ('m', 's', 'e'))
 );
 
 CREATE TABLE movie (
   id_movie INT PRIMARY KEY,
+  trailer TEXT,
   length INT NOT NULL CHECK (length > 0),
   FOREIGN KEY (id_movie)
     REFERENCES entry (id_entry)
@@ -108,7 +118,7 @@ CREATE TABLE movie (
 
 CREATE TABLE series (
   id_series INT PRIMARY KEY,
-  running BOOLEAN NOT NULL,
+  trailer TEXT,
   FOREIGN KEY (id_series)
     REFERENCES entry (id_entry)
     ON DELETE CASCADE
@@ -137,7 +147,7 @@ CREATE TABLE celebrity (
   id_celebrity SERIAL PRIMARY KEY,
   name VARCHAR (100) NOT NULL CHECK (name <> ''),
   biography TEXT CHECK (biography <> ''),
-  picture BYTEA
+  picture TEXT
 );
 
 CREATE TABLE follow_celebrity (
@@ -154,27 +164,17 @@ CREATE TABLE follow_celebrity (
     ON UPDATE CASCADE
 );
 
-CREATE TABLE movie_roles (
+CREATE TABLE roles (
   id_celebrity INT NOT NULL,
   id_entry INT NOT NULL,
-  PRIMARY KEY (id_celebrity, id_entry),
+  role VARCHAR (60) NOT NULL CHECK (role <> ''),
+  PRIMARY KEY (id_celebrity, id_entry, role),
   FOREIGN KEY (id_celebrity)
     REFERENCES celebrity (id_celebrity)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (id_entry)
     REFERENCES entry (id_entry)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-CREATE TABLE roles (
-  id_celebrity INT NOT NULL,
-  id_entry INT NOT NULL,
-  role VARCHAR (60) NOT NULL CHECK (role <> ''),
-  PRIMARY KEY (id_celebrity, id_entry, role),
-  FOREIGN KEY (id_celebrity, id_entry)
-    REFERENCES movie_roles (id_celebrity, id_entry)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
