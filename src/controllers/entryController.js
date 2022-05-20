@@ -29,3 +29,11 @@ const addMovie = (req, res) => {
       message: 'Movie added successfully',
     });
   }
+  return res.status(409).json({
+    message: 'Movie already exists',
+  });
+}
+
+module.exports = {
+  addMovie,
+};
