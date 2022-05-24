@@ -37,6 +37,25 @@ const cities = Joi.string().valid(
   'Extranjero',
 );
 
+const classification = Joi.string().valid(
+  'AA',
+  'A',
+  'B',
+  'C',
+  'B15',
+  'C',
+  'D',
+  'NA'
+);
+
+const type = Joi.string().valid(
+  'm',
+  's',
+  'e',
+);
+
 module.exports = {
   cities,
+  classification,
+  type,
 }

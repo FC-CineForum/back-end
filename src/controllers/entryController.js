@@ -1,39 +1,97 @@
-const { Pool } = require('pg');
-const bcrypt = require('bcrypt');
-const { authMiddleware } = require('../middleware/');
-const { DB_PASSWORD } = process.env;
+const { database } = require('../../database/config/index');
 
-const pool = new Pool({
-  host: 'localhost',
-  user: 'postgres',
-  password: `${DB_PASSWORD}`,
-  database: 'cineforum',
-  port: 5432
-});
-
-const addMovie = (req, res) => {
+const addMovie = async (req, res) => {
   const {
-    link, image, synopsis, title, release, classification, type, length,
+    title, synopsis, image, release, classification, type, trailer,length,
   } = req.body;
-  const exists = pool.query(
-    'SELECT * FROM movies WHERE title = $1', [title]
-  );
-  if (exists.rowCount === 0) {
-    await pool.query(
-      `INSERT INTO movies 
-      (link, image, synopsis, title, release, classification, type, length) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [link, image, synopsis, title, release, classification, type, length]
+  try {
+    const exists = await database.query(
+      'SELECT * FROM entry WHERE title = $1', [title]
     );
+    if (exists.rowCount !== 0) {
+      return res.status(409).json({
+        message: 'Entry already exists',
+      });
+    }
+    const movie = await database.query(
+    `INSERT INTO entry (title, synopsis, image, release, classification, type)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_entry`,
+      [title, synopsis, image, release, classification, type]
+    );
+    const id = movie.rows[0].id_entry;
+    await database.query(
+      `INSERT INTO movie (id_movie, trailer, length) VALUES ($1, $2, $3)`,
+      [id, trailer, length]);
     return res.status(200).json({
       message: 'Movie added successfully',
     });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });  
   }
-  return res.status(409).json({
-    message: 'Movie already exists',
-  });
-}
+};
+
+const addSeries = async (req, res) => {
+  const {
+    title, synopsis, image, release, classification, type, 
+    trailer,
+  } = req.body;
+  try {
+    const exists = await database.query(
+      'SELECT * FROM entry WHERE title = $1', [title]
+    );
+    if (exists.rowCount !== 0) {
+      return res.status(409).json({
+        message: 'Series is already in the database',
+      });
+    }
+    const series = await database.query(
+      `INSERT INTO entry (title, synopsis, image, release, classification, type)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_entry`,
+      [title, synopsis, image, release, classification, type]
+    );
+    const id = series.rows[0].id_entry;
+    await database.query(
+    `INSERT INTO series (id_series, trailer) VALUES ($1, $2)`, [id, trailer]);
+    return res.status(200).json({
+      message: 'Series added successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });  
+  }
+};
+
+const addEpisode = async (req, res) => {
+  const { 
+    idSeries, title, synopsis, image, release, classification, type, season, 
+    noEp, length } = req.body;
+  try {
+    const episode = await database.query(
+      `INSERT INTO entry (title, synopsis, image, release, classification, type)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_entry`,
+      [title, synopsis, image, release, classification, type]
+    );
+    const id = episode.rows[0].id_entry;
+    const result = await database.query(
+      `INSERT INTO episode (id_episode, id_series, season, no_ep, length)
+      VALUES ($1, $2, $3, $4, $5)`, [id, idSeries, season, noEp, length]);
+    return res.status(200).json({
+      message: 'Episode added successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error 
+    });  
+  }
+};
 
 module.exports = {
   addMovie,
+  addSeries,
+  addEpisode,
 };
+
+
