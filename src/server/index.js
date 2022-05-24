@@ -6,9 +6,12 @@ const cors = require('cors');
 
 const app = express();
 
+const { database } = require('../../database/config/index');
 const { PORT, FRONT_URL} = process.env;
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  database.connect(); 
+});
 console.log('Server is running on port:', PORT);
 
 app.use(morgan('dev'));
@@ -27,7 +30,7 @@ app.use(
       } else {
         callback(new Error('Not allowed by CORS'))
       }
-      console.log(origin);
+      console.log(cors);
     },
     credentials: true,
   })
@@ -41,6 +44,5 @@ app.get('/', (_, res) => {
 });
 
 app.use('/cineforum', require('../routes'));
-
 
 module.exports = { app };
