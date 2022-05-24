@@ -1,15 +1,6 @@
-const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const { authMiddleware } = require('../middleware/');
-const { DB_PASSWORD } = process.env;
-
-const pool = new Pool({
-  host: 'localhost',
-  user: 'postgres',
-  password: `${DB_PASSWORD}`,
-  database: 'cineforum',
-  port: 5432
-});
+const { database } = require('../../database/config/index');
 
 const signUp = async (req, res) => {
   const { 
@@ -17,13 +8,13 @@ const signUp = async (req, res) => {
     name, lastName
   } = req.body;
  
-  const userExists = await pool.query(
+  const userExists = await database.query(
     'SELECT * FROM users WHERE email = $1', [email] 
     );
   if (userExists.rowCount === 0) { 
     const hash = await bcrypt.hash(password, 10); 
     const token = authMiddleware.generateTokenEmail(username);
-    await pool.query(`INSERT INTO users 
+    await database.query(`INSERT INTO users 
     (username, email, country, is_public, date_of_birth, 
       avatar, password, name, last_name, token) 
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, 
@@ -44,7 +35,7 @@ const logIn = async (req, res) => {
   if  (!email || !password) return res.status(401).json({
     message: 'Email and password are required'
   });
-  const user = await pool.query(
+  const user = await database.query(
     'SELECT * FROM users u WHERE u.email = $1', [email]
   );
   if (user.rowCount !== 1) return res.status(401).json({
@@ -72,7 +63,7 @@ const verifyAccount = async (req, res) => {
   const { token } = req.params;
   try {
     const user = authMiddleware.verifyTokenEmail(token);
-    await pool.query(
+    await database.query(
       `UPDATE users SET is_verified = true WHERE username = $1`, 
       [user.username]
     );
@@ -87,12 +78,11 @@ const verifyAccount = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-  // const bearerHeaders = req.headers["authorization"];
-  // const token = bearerHeaders.split(' ')[1];
-  const token = req.headers["authorization"];
+  const bearerHeaders = req.headers["authorization"];
+  const token = bearerHeaders.split(' ')[1];
   try {
     const user = authMiddleware.verifyTokenLogin(token);
-    const userData = await pool.query(
+    const userData = await database.query(
       `SELECT * FROM users WHERE username = $1`, 
       [user.username]
     );
