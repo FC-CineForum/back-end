@@ -27,7 +27,7 @@ module.exports = {
   }),
 
   auth: celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
+    [Segments.QUERY]: Joi.object().keys({
       token: Joi.string().required(),
     }),
   }),
