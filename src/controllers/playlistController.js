@@ -96,7 +96,12 @@ const getUserPlaylists = async (req, res) => {
     const playlistEntries = await database.query(
       'SELECT * FROM playlist_entry WHERE username = $1', [username]
     )
-    let values = userPlaylists.rows.map(elem =>)
+    return res.status(200).json(
+      userPlaylists.rows.reduce((acc, l) => {
+        ...acc,
+        [l.list_name]: playlistEntries.rows.filter(e => e.list_name === l.list_name),
+      }, {})
+    );
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error

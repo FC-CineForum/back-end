@@ -11,8 +11,6 @@ module.exports = {
       listName: Joi.string().max(60).required(),
       username: Joi.string().min(8).max(30).required(),
       isPublic: Joi.boolean().required(),
-      // dateCreated: Joi.string().required(),
-      // dateModified: Joi.string().required(),
       description: Joi.string().max(280).optional(),
     }),
   }),
