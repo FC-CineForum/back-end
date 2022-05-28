@@ -91,16 +91,48 @@ const getUserPlaylists = async (req, res) => {
       });
     }
     const userPlaylists = await database.query(
+      'SELECT * FROM playlists WHERE username = $1 AND is_public', [username]
+    );
+    const playlistEntries = await database.query(
+      'SELECT * FROM playlist_entry WHERE username = $1', [username]
+    );
+    return res.status(200).json(
+      userPlaylists.rows.map(l => ({
+        name: l.list_name,
+        entries: playlistEntries.rows.filter(e => e.list_name === l.list_name)
+                                     .map(e => e.id_entry),
+      }))
+    );
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+}
+
+const getOwnUserPlaylists = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const userExists = await database.query(
+      'SELECT * FROM users WHERE username = $1', [username]
+    );
+    if (userExists.rowCount === 0) {
+      return res.status(409).json({
+        message: 'User not found'
+      });
+    }
+    const userPlaylists = await database.query(
       'SELECT * FROM playlists WHERE username = $1', [username]
     );
     const playlistEntries = await database.query(
       'SELECT * FROM playlist_entry WHERE username = $1', [username]
-    )
+    );
     return res.status(200).json(
-      userPlaylists.rows.reduce((acc, l) => (){
-        ...acc,
-        [l.list_name]: playlistEntries.rows.filter(e => e.list_name === l.list_name).map(e => e.id_entry),
-      }), {})
+      userPlaylists.rows.map(l => ({
+        name: l.list_name,
+        entries: playlistEntries.rows.filter(e => e.list_name === l.list_name)
+                                     .map(e => e.id_entry),
+      }))
     );
   } catch (error) {
     return res.status(500).json({
