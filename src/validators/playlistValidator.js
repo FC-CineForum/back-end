@@ -25,7 +25,7 @@ module.exports = {
 
   getUserPlaylists: celebrate({
     [Segments.BODY]: Joi.object().keys({
-      username: Joi.string().require(),
+      username: Joi.string().required(),
     }),
   }),
 }

@@ -1,15 +1,18 @@
-const { database } = requiere('../../database/config/index');
+const { database } = require('../../database/config/index');
 
 const addPlaylist = async (req, res) => {
   const {
     listName, username, isPublic, description
   } = req.body;
+  return res.status(200).json({
+    message: "UmU"
+  });
   try {
     const userExist = await database.query(
       'SELECT * from users WHERE username = $1', [username]
     );
     const playlistExists = await database.query(
-      'SELECT * from playlist WHERE list_name = $1', [listName]
+      'SELECT * from playlist WHERE username = $1 AND list_name = $2', [username, listName]
     );
     if (userExist.rowCount === 0) {
       return res.status(409).json({
@@ -39,12 +42,13 @@ const addPlaylist = async (req, res) => {
 
 const addEntryToPlaylist = async (req, res) => {
   const { idEntry, listName, username } = req.body;
+  console.log("Creating playlist")
   try { 
     const userExist = await database.query(
       'SELECT * from users WHERE username = $1', [username]
     );
     const playlistExists = await database.query(
-      'SELECT * from playlist WHERE list_name = $1', [listName]
+      'SELECT * from playlist WHERE username = $1 AND list_name = $2', [username, listName]
     );
     const entryExists = await database.query(
       'SELECT * from entry WHERE id_entry = $1', [idEntry]
@@ -140,3 +144,8 @@ const getOwnUserPlaylists = async (req, res) => {
     });
   }
 }
+
+module.exports = {
+  addPlaylist,
+  addEntryToPlaylist
+};
