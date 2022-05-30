@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --runInBand --verbose --coverage",
     "dev": "nodemon src/server/index.js",
-    "kill": "kill -9 $(lsof -t -i:3000)"
+    "kill": "kill -9 $(lsof -t -i:3000)",
+    "start": "node src/server/index.js"
   },
   "repository": {
     "type": "git",
