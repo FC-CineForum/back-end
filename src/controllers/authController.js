@@ -7,7 +7,6 @@ const signUp = async (req, res) => {
     username, email, country, birthDate, isPublic, avatar, password, 
     name, lastName
   } = req.body;
- 
   const userExists = await database.query(
     'SELECT * FROM users WHERE email = $1', [email] 
     );

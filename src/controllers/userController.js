@@ -6,7 +6,7 @@ const rating = async (req, res) => {
   } = req.body;
   try {
     const rating = await database.query(
-    `INSERT INTO reply (id_entry, username, stars, message)
+    `INSERT INTO rating (id_entry, username, stars, message)
       VALUES ($1, $2, $3, $4) RETURNING id_rating`,
       [idEntry, username, stars, message]
     );
@@ -42,16 +42,14 @@ const reply = async (req, res) => {
 };
 
 const like = async (req, res) => {
-  const { idReply, username, isLike } = req.body;
+  const { username, idReply, isLike } = req.body;
   try {
-    const like = await database.query(
-      `INSERT INTO like (username, id_reply, is_like)
-      VALUES ($1, $2, $3) RETURNING id_like`, [username, idReply, isLike] 
-    );
-    const id = like.rows[0].id_like;
-    if (!id) return res.status(400).json({ message: 'Missing like' });
+    console.log(req.body);
+    await database.query(
+      'INSERT INTO likes (username, id_reply, is_like) VALUES ($1, $2, $3)',
+      [username, idReply, isLike]);
     return res.status(200).json({
-      message: `Like id: ${id}`,
+      message: `Like ${isLike}`,
     });
   } catch (error) {
     return res.status(500).json({
