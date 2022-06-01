@@ -88,10 +88,60 @@ const addEpisode = async (req, res) => {
   }
 };
 
+getMovie = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const movie = await database.query(
+      `SELECT * FROM entry e INNER JOIN movie m ON e.id_entry = m.id_movie
+        WHERE e.id_entry = $1`, [id]);
+    return res.status(200).json({
+      movie: movie.rows[0],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
+getSeries = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const series = await database.query(
+      `SELECT * FROM entry e INNER JOIN series s ON e.id_entry = s.id_series
+      WHERE e.id_entry = $1`, [id]);
+    return res.status(200).json({
+      series: series.rows[0],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
+getLatest = async (_, res) => {
+  try {
+    const latest = await database.query(
+      `SELECT * FROM entry e INNER JOIN movie m ON e.id_entry = m.id_movie
+        WHERE e.id_entry = (SELECT MAX(id_entry) FROM entry)`);
+    return res.status(200).json({
+      latest: latest.rows[0],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
 module.exports = {
   addMovie,
   addSeries,
   addEpisode,
+  getMovie,
+  getSeries,
+  getLatest,
 };
 
 

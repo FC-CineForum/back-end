@@ -41,4 +41,10 @@ module.exports = {
       length: Joi.number().integer().required(),
     }),
   }),
+
+  getEntry: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.number().integer().required(),
+    }),
+  }),
 }
