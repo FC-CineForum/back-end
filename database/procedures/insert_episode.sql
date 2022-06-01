@@ -12,4 +12,3 @@ BEGIN
   INSERT INTO episode VALUES (id, id_series, season, no_ep, length);
 END;
 $$ LANGUAGE plpgsql;
-

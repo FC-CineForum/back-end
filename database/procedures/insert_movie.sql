@@ -12,4 +12,3 @@ BEGIN
   INSERT INTO movie VALUES (id, trailer, length);
 END;
 $$ LANGUAGE plpgsql;
-

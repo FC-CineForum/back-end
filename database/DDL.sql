@@ -18,15 +18,15 @@ CREATE TABLE users (
   token VARCHAR (280),
   is_verified BOOLEAN DEFAULT FALSE,
   CONSTRAINT null_entries
-    CHECK (deleted OR
-            (email IS NOT NULL AND
-             is_public IS NOT NULL AND
-             date_of_birth IS NOT NULL AND
-             avatar IS NOT NULL AND
-             password IS NOT NULL AND
-             name IS NOT NULL AND
-             last_name IS NOT NULL AND
-             is_verified IS NOT NULL))
+    CHECK (deleted OR (
+      email IS NOT NULL AND
+      is_public IS NOT NULL AND
+      date_of_birth IS NOT NULL AND
+      avatar IS NOT NULL AND
+      password IS NOT NULL AND
+      name IS NOT NULL AND
+      last_name IS NOT NULL AND
+      is_verified IS NOT NULL))
 );
 
 CREATE TABLE administrator (

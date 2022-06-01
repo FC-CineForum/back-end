@@ -123,5 +123,3 @@ module.exports = {
   getEntry,
   getLatest,
 };
-
-

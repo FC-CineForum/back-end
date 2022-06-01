@@ -12,4 +12,3 @@ BEGIN
   INSERT INTO series VALUES (id, trailer);
 END;
 $$ LANGUAGE plpgsql;
-
