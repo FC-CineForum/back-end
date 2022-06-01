@@ -18,7 +18,7 @@ CREATE TABLE users (
   token VARCHAR (280),
   is_verified BOOLEAN DEFAULT FALSE,
   CONSTRAINT null_entries
-    CHECK (deleted OR 
+    CHECK (deleted OR
             (email IS NOT NULL AND
              is_public IS NOT NULL AND
              date_of_birth IS NOT NULL AND
@@ -104,6 +104,16 @@ CREATE TABLE entry (
   release INT NOT NULL,
   classification VARCHAR (3) NOT NULL CHECK (classification in ('AA', 'A', 'B', 'B15', 'C', 'D', 'NA')),
   type CHAR (1) NOT NULL CHECK (type IN ('m', 's', 'e'))
+);
+
+CREATE TABLE last_inserted_entry (
+  id_entry INT PRIMARY KEY,
+  index INT NOT NULL,
+  type CHAR (1) NOT NULL,
+  FOREIGN KEY (id_entry)
+    REFERENCES entry (id_entry)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE movie (
