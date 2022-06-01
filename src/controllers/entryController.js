@@ -93,7 +93,13 @@ getEntry = async (req, res) => {
   try {
     const entry = await database.query(
       `SELECT * FROM entry e, series, movie WHERE e.id_entry = $1`, [id]);
-    return res.status(200).json(entry.rows[0]);
+    const rating = await database.query(
+      `SELECT AVG(stars) FROM rating WHERE id_entry = $1`, [id]);
+      console.log(rating);
+    return res.status(200).json({
+      entry: entry.rows[0],
+      rating: rating.rows[0],
+    });
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error
