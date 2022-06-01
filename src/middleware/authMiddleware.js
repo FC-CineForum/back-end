@@ -66,7 +66,7 @@ const sendConfirmationEmail =  async(email, token) => {
       subject: 'Verify your account',
       html: `
       <p> Please click on
-        <a href="http://localhost:8080/verifyAccount?token=${token}"> 
+        <a href="${process.env.FRONT_URL}/verifyAccount?token=${token}"> 
           the next link to verify your account 
         </a> 
       </p>`
