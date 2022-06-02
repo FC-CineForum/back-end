@@ -153,7 +153,7 @@ getEntry = async (req, res) => {
 getLatest = async (_, res) => {
   try {
     const latest = await database.query(
-      ``);
+      `SELECT * FROM last_inserted_entry`);
     return res.status(200).json({
       latest: latest.rows[0],
     });
