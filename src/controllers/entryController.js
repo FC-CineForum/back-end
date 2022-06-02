@@ -198,28 +198,13 @@ getLatest = async (_, res) => {
   }
 };
 
-deleteMovie = async (req, res) => {
+deleteEntry = async (req, res) => {
   const { id } = req.params;
   try {
     await database.query(
-      'DELETE FROM movie WHERE id_movie = $1 RETURNING id_movie', [id]);
+      'DELETE FROM entry WHERE id_entry = $1', [id]);
     return res.status(200).json({
-      message: 'Movie deleted successfully',
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: 'Internal server error', error
-    });
-  }
-};
-
-deleteSeries = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const series = await database.query(
-      'DELETE FROM series WHERE id_series = $1 RETURNING id_series', [id]);
-    return res.status(200).json({
-      message: 'Series deleted successfully',
+      message: 'Entry deleted successfully',
     });
   } catch (error) {
     return res.status(500).json({
@@ -234,6 +219,5 @@ module.exports = {
   addEpisode,
   getEntry,
   getLatest,
-  deleteMovie,
-  deleteSeries,
+  deleteEntry,
 };

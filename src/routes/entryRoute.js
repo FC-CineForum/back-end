@@ -20,10 +20,7 @@ entryValidator.getEntry, entryController.getEntry);
 router.get('/dashboard',
 entryController.getLatest);
 
-router.delete('/movies/:id',  
-entryValidator.deleteEntry, entryController.deleteMovie);
-
-router.delete('/series/:id', 
-entryValidator.deleteEntry, entryController.deleteSeries);
+router.delete('/entry/:id',  
+entryValidator.deleteEntry, entryController.deleteEntry);
 
 module.exports = router;
