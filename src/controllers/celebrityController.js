@@ -24,6 +24,24 @@ const addCelebrity = async (req, res) => {
   }
 };
 
+const addRole = async (req, res) => {
+  const { celebrityId, entryId }  = req.params;
+  const { role } = req.body;
+  try {
+    const exists = await database.query(
+      'INSERT INTO role (id_celebrity, id_entry, role) VALUES ($1, $2, $3)',
+      [celebrityId, entryId, role]);
+    return res.status(200).json({
+      message: `${role} added successfully`
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
 module.exports = {
   addCelebrity,
+  addRole,
 }
