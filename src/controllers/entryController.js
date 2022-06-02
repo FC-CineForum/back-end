@@ -24,6 +24,7 @@ const addMovie = async (req, res) => {
       [id, trailer, length]);
     return res.status(200).json({
       message: 'Movie added successfully',
+      entryId: id,
     });
   } catch (error) {
     return res.status(500).json({
@@ -56,6 +57,7 @@ const addSeries = async (req, res) => {
     `INSERT INTO series (id_series, trailer) VALUES ($1, $2)`, [id, trailer]);
     return res.status(200).json({
       message: 'Series added successfully',
+      entryId: id,
     });
   } catch (error) {
     return res.status(500).json({
@@ -75,7 +77,7 @@ const addEpisode = async (req, res) => {
       [title, synopsis, image, release, classification, type]
     );
     const id = episode.rows[0].id_entry;
-    const result = await database.query(
+    await database.query(
       `INSERT INTO episode (id_episode, id_series, season, no_ep, length)
       VALUES ($1, $2, $3, $4, $5)`, [id, idSeries, season, noEp, length]);
     return res.status(200).json({
@@ -92,13 +94,54 @@ getEntry = async (req, res) => {
   const { id } = req.params;
   try {
     const entry = await database.query(
-      `SELECT * FROM entry e, series, movie WHERE e.id_entry = $1`, [id]);
+      'SELECT * FROM entry WHERE id_entry = $1', [id]);
+    let entryInfo;
+    switch (entry.rows[0].type) {
+      case 'm':
+        entryInfo = await database.query(
+          'SELECT * FROM movie WHERE id_movie = $1', [id]);
+        break;
+      case 's':
+        entryInfo = await database.query(
+          'SELECT * FROM series WHERE id_series = $1', [id]);
+        break;
+      case 'e':
+        entryInfo = await database.query(
+          'SELECT * FROM episode WHERE id_episode = $1', [id]);
+        break;
+      default:
+        return res.status(404).json({  
+          message: 'Entry not found',
+        });
+    }
     const rating = await database.query(
       `SELECT AVG(stars) FROM rating WHERE id_entry = $1`, [id]);
-      console.log(rating);
+    const comments = await database.query(
+      'SELECT * FROM rating WHERE id_entry = $1', [id]);
+    let replies = [];  
+    for (let i=0; i < comments.rowCount; i++) {
+      const reply = await database.query(
+        'SELECT * FROM reply WHERE id_rating = $1', [comments.rows[i].id_rating] 
+      );
+      replies.push({
+        replyId: reply.rows[i].id_reply,
+        ratingId: reply.rows[i].id_rating,
+        username: reply.rows[i].username,
+        message: reply.rows[i].message,
+        date: reply.rows[i].date_created,
+      });
+    }
     return res.status(200).json({
-      entry: entry.rows[0],
-      rating: rating.rows[0],
+      title: entry.rows[0].title,
+      synopsis: entry.rows[0].synopsis,
+      image: entry.rows[0].image,
+      release: entry.rows[0].release,
+      classification: entry.rows[0].classification,
+      type: entry.rows[0].type,
+      rating: parseFloat(rating.rows[0].avg),
+      trailer: entryInfo.rows[0].trailer,
+      length: entryInfo.rows[0].length,
+      replies: replies,
     });
   } catch (error) {
     return res.status(500).json({
@@ -110,8 +153,7 @@ getEntry = async (req, res) => {
 getLatest = async (_, res) => {
   try {
     const latest = await database.query(
-      `SELECT * FROM entry e INNER JOIN series s ON e.id_entry = s.id_series
-      WHERE e.id_entry = $1`, [id]);
+      ``);
     return res.status(200).json({
       latest: latest.rows[0],
     });

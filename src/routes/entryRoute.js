@@ -17,7 +17,7 @@ entryValidator.addEpisode, entryController.addEpisode);
 router.get('/entry/:id', 
 entryValidator.getEntry, entryController.getEntry);
 
-router.get('/entry/latest',
+router.get('/dashboard',
 entryController.getLatest);
 
 module.exports = router;
