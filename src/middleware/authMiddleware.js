@@ -33,7 +33,7 @@ const generateTokenEmail = (username) => {
   try {
     const token = jwt.sign({
       username: username,
-    }, JWT_TOKEN_EMAIL, { expiresIn: '24h' });
+    }, JWT_TOKEN_EMAIL, { expiresIn: '72h' });
     return token;
   } catch (error) {
     console.log('Create token failed');

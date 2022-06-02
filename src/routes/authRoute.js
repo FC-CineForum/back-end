@@ -11,8 +11,8 @@ authValidator.signUp, authController.signUp);
 router.post('/logIn',  
 authValidator.logIn, authController.logIn);
 
-router.get('/verifyAccount',  
-authValidator.auth, authController.verifyAccount);
+router.get('/verifyAccount/:token', 
+authValidator.verifyAccount, authController.verifyAccount);
 
 router.get('/getUser/',
 authValidator.getUser, authController.getUser);

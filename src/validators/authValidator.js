@@ -19,16 +19,16 @@ module.exports = {
     }), 
   }),
 
+  verifyAccount: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      token: Joi.string().required(),
+    }),
+  }),
+
   logIn: celebrate({
     [Segments.BODY]: Joi.object().keys({
       email: Joi.string().max(50).required(),
       password: Joi.string().min(2).required(),
-    }),
-  }),
-
-  auth: celebrate({
-    [Segments.QUERY]: Joi.object().keys({
-      token: Joi.string().required(),
     }),
   }),
 

@@ -5,13 +5,13 @@ const { userValidator } = require('../validators')
 
 const router = express.Router();
 
-router.post('/rating',  
+router.post('/rating/:entryId',  
 userValidator.rating, userController.rating);
 
-router.post('/reply',  
+router.post('/reply/:ratingId',  
 userValidator.reply, userController.reply);
 
-router.post('/likes',  
+router.post('/like/:replyId',  
 userValidator.likes, userController.like);
 
 module.exports = router;

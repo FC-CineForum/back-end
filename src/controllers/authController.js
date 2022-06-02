@@ -59,7 +59,7 @@ const logIn = async (req, res) => {
 }
 
 const verifyAccount = async (req, res) => { 
-  const { token } = req.query;
+  const { token } = req.params;
   try {
     const user = authMiddleware.verifyTokenEmail(token);
     await database.query(
