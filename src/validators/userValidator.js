@@ -31,4 +31,10 @@ module.exports = {
       isLike: Joi.boolean().required(),
     }),
   }),
+
+  dislike: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      replyId: Joi.number().integer().required(),
+    }),
+  }),
 };

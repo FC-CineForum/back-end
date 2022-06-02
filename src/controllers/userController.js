@@ -59,8 +59,24 @@ const like = async (req, res) => {
   }
 };
 
+const dislike = async (req, res) => {
+  const { replyId } = req.params;
+  try {
+    await database.query(
+      'DELETE FROM likes WHERE id_reply = $1', [replyId]);
+    return res.status(200).json({
+      message: 'Like deleted'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
 module.exports = {
   rating,
   reply,
   like,
+  dislike,
 };

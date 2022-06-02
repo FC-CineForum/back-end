@@ -47,4 +47,10 @@ module.exports = {
       id: Joi.number().integer().required(),
     }),
   }),
+
+  deleteEntry: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.number().integer().required(),
+    }),
+  }),
 }

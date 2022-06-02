@@ -14,4 +14,7 @@ userValidator.reply, userController.reply);
 router.post('/like/:replyId',  
 userValidator.likes, userController.like);
 
+router.delete('/like/:replyId',  
+userValidator.dislike, userController.dislike);
+
 module.exports = router;

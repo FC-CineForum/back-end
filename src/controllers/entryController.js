@@ -124,8 +124,8 @@ getEntry = async (req, res) => {
         'SELECT * FROM reply WHERE id_rating = $1', [comments.rows[i].id_rating] 
       );
       replies.push({
-        replyId: reply.rows[i].id_reply,
-        ratingId: reply.rows[i].id_rating,
+        //replyId: reply.rows[i].id_reply,
+        //ratingId: reply.rows[i].id_rating,
         username: reply.rows[i].username,
         message: reply.rows[i].message,
         date: reply.rows[i].date_created,
@@ -198,10 +198,42 @@ getLatest = async (_, res) => {
   }
 };
 
+deleteMovie = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await database.query(
+      'DELETE FROM movie WHERE id_movie = $1 RETURNING id_movie', [id]);
+    return res.status(200).json({
+      message: 'Movie deleted successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
+deleteSeries = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const series = await database.query(
+      'DELETE FROM series WHERE id_series = $1 RETURNING id_series', [id]);
+    return res.status(200).json({
+      message: 'Series deleted successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
 module.exports = {
   addMovie,
   addSeries,
   addEpisode,
   getEntry,
   getLatest,
+  deleteMovie,
+  deleteSeries,
 };
