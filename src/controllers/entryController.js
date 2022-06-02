@@ -152,11 +152,45 @@ getEntry = async (req, res) => {
 
 getLatest = async (_, res) => {
   try {
-    const latest = await database.query(
-      `SELECT * FROM last_inserted_entry`);
-    return res.status(200).json({
-      latest: latest.rows[0],
-    });
+    const latest = await database.query(`SELECT * FROM last_inserted_entry`);
+    let dashboard = [];
+    for (let i = 0; i < latest.rowCount; i++) {
+      let entry;
+      if(latest.rows[i].type === 'm') {
+        entry = await database.query(
+          'SELECT * FROM entry WHERE id_entry = $1', [latest.rows[i].id_entry]);
+        const movie = await database.query(
+          'SELECT * FROM movie WHERE id_movie = $1', [latest.rows[i].id_entry]);
+        dashboard.push({
+          id: entry.rows[0].id_entry,
+          title: entry.rows[0].title,
+          synopsis: entry.rows[0].synopsis,
+          image: entry.rows[0].image,
+          release: entry.rows[0].release,
+          classification: entry.rows[0].classification,
+          type: entry.rows[0].type,
+          trailer: movie.rows[0].trailer,
+          length: movie.rows[0].length,
+        }); 
+      } 
+      if (latest.rows[i].type === 's') {
+        entry = await database.query(
+          'SELECT * FROM entry WHERE id_entry = $1', [latest.rows[i].id_entry]);
+        const series = await database.query(
+          'SELECT * FROM series WHERE id_series = $1', [latest.rows[i].id_entry]);
+        dashboard.push({
+          id: entry.rows[0].id_entry,
+          title: entry.rows[0].title,
+          synopsis: entry.rows[0].synopsis,
+          image: entry.rows[0].image,
+          release: entry.rows[0].release,
+          classification: entry.rows[0].classification,
+          type: entry.rows[0].type,
+          trailer: series.rows[0].trailer,
+        });
+      }
+    }
+    return res.status(200).json(dashboard);
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error
