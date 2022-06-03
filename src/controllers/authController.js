@@ -7,7 +7,6 @@ const signUp = async (req, res) => {
     username, email, country, birthDate, isPublic, avatar, password, 
     name, lastName
   } = req.body;
- 
   const userExists = await database.query(
     'SELECT * FROM users WHERE email = $1', [email] 
     );
@@ -60,7 +59,7 @@ const logIn = async (req, res) => {
 }
 
 const verifyAccount = async (req, res) => { 
-  const { token } = req.query;
+  const { token } = req.params;
   try {
     const user = authMiddleware.verifyTokenEmail(token);
     await database.query(

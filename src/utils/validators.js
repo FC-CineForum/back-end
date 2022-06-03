@@ -54,8 +54,15 @@ const type = Joi.string().valid(
   'e',
 );
 
+const role = Joi.string().valid(
+  'Director',
+  'Writer',
+  'Actor',
+);
+
 module.exports = {
   cities,
   classification,
   type,
+  role,
 }
