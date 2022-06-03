@@ -118,17 +118,17 @@ getEntry = async (req, res) => {
       `SELECT AVG(stars) FROM rating WHERE id_entry = $1`, [id]);
     const comments = await database.query(
       'SELECT * FROM rating WHERE id_entry = $1', [id]);
-    let replies = [];  
+    let ratings = [];  
     for (let i=0; i < comments.rowCount; i++) {
-      const reply = await database.query(
-        'SELECT * FROM reply WHERE id_rating = $1', [comments.rows[i].id_rating] 
+      let reply = await database.query(
+        `SELECT username, message, date_created FROM reply 
+        WHERE id_rating = $1`, [comments.rows[i].id_rating] 
       );
-      replies.push({
-        //replyId: reply.rows[i].id_reply,
-        //ratingId: reply.rows[i].id_rating,
-        username: reply.rows[i].username,
-        message: reply.rows[i].message,
-        date: reply.rows[i].date_created,
+      ratings.push({
+        username: comments.rows[i].username,
+        stars: comments.rows[i].stars,
+        message: comments.rows[i].message,
+        replies: reply.rows,
       });
     }
     return res.status(200).json({
@@ -141,7 +141,7 @@ getEntry = async (req, res) => {
       rating: parseFloat(rating.rows[0].avg),
       trailer: entryInfo.rows[0].trailer,
       length: entryInfo.rows[0].length,
-      replies: replies,
+      ratings: ratings,
     });
   } catch (error) {
     return res.status(500).json({

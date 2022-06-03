@@ -15,21 +15,22 @@ const addCelebrity = async (req, res) => {
       `INSERT INTO celebrity (name, biography, picture)
       VALUES ($1, $2, $3) RETURNING id_celebrity`, [name, biography, picture]);
     return res.status(200).json({
-      message: `${name} added successfully`
+      message: `${name} added successfully`,
+      celebrityId: celebrity.rows[0].id_celebrity,
     });
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error
     });
   }
-};
+}; 
 
 const addRole = async (req, res) => {
   const { celebrityId, entryId }  = req.params;
   const { role } = req.body;
   try {
-    const exists = await database.query(
-      'INSERT INTO role (id_celebrity, id_entry, role) VALUES ($1, $2, $3)',
+    await database.query(
+      'INSERT INTO roles (id_celebrity, id_entry, role) VALUES ($1, $2, $3)',
       [celebrityId, entryId, role]);
     return res.status(200).json({
       message: `${role} added successfully`
