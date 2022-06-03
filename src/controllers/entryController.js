@@ -116,19 +116,31 @@ getEntry = async (req, res) => {
     }
     const rating = await database.query(
       `SELECT AVG(stars) FROM rating WHERE id_entry = $1`, [id]);
-    const comments = await database.query(
+    let comments = await database.query(
       'SELECT * FROM rating WHERE id_entry = $1', [id]);
     let ratings = [];  
     for (let i=0; i < comments.rowCount; i++) {
       let reply = await database.query(
-        `SELECT username, message, date_created FROM reply 
-        WHERE id_rating = $1`, [comments.rows[i].id_rating] 
-      );
+        'SELECT username, message FROM reply WHERE id_rating = $1', 
+        [comments.rows[i].id_rating]);
       ratings.push({
         username: comments.rows[i].username,
         stars: comments.rows[i].stars,
         message: comments.rows[i].message,
         replies: reply.rows,
+      });
+    }
+    let castRole = await database.query(
+      'SELECT id_celebrity, role FROM roles WHERE id_entry = $1', [id]);
+      let cast = [];
+    for (let i=0; i < castRole.rowCount; i++) {
+      let celebrity = await database.query(
+        'SELECT * FROM celebrity WHERE id_celebrity = $1', 
+        [castRole.rows[i].id_celebrity]);
+      cast.push({
+        name: celebrity.rows[0].name,
+        role: castRole.rows[i].role,
+        picture: celebrity.rows[0].picture,
       });
     }
     return res.status(200).json({
@@ -138,10 +150,11 @@ getEntry = async (req, res) => {
       release: entry.rows[0].release,
       classification: entry.rows[0].classification,
       type: entry.rows[0].type,
-      rating: parseFloat(rating.rows[0].avg),
       trailer: entryInfo.rows[0].trailer,
       length: entryInfo.rows[0].length,
+      rating: parseFloat(rating.rows[0].avg),
       ratings: ratings,
+      cast: cast,
     });
   } catch (error) {
     return res.status(500).json({
