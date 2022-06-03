@@ -1,3 +1,4 @@
+const { response } = require('express');
 const { database } = require('../../database/config/index');
 
 const addMovie = async (req, res) => {
@@ -145,7 +146,7 @@ getEntry = async (req, res) => {
         picture: celebrity.rows[0].picture,
       });
     }
-    return res.status(200).json({
+    let response = {
       title: entry.rows[0].title,
       synopsis: entry.rows[0].synopsis,
       image: entry.rows[0].image,
@@ -155,10 +156,13 @@ getEntry = async (req, res) => {
       trailer: entryInfo.rows[0].trailer,
       length: entryInfo.rows[0].length,
       rating: parseFloat(rating.rows[0].avg),
-      noEpisodes: parseInt(noEpisodes.rows[0].count),
       ratings: ratings,
       cast: cast,
-    });
+    };
+    if (entry.rows[0].type === 's') {
+      response.noEpisodes = parseInt(noEpisodes.rows[0].count);
+    }
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error
@@ -188,6 +192,7 @@ getLatest = async (_, res) => {
           trailer: movie.rows[0].trailer,
           length: movie.rows[0].length,
         }); 
+        console.log(dashboard)
       } 
       if (latest.rows[i].type === 's') {
         entry = await database.query(
