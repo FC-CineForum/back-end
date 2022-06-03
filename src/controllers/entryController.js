@@ -104,6 +104,8 @@ getEntry = async (req, res) => {
       case 's':
         entryInfo = await database.query(
           'SELECT * FROM series WHERE id_series = $1', [id]);
+        var noEpisodes = await database.query(
+          'SELECT COUNT(*) FROM episode WHERE id_series = $1', [id]);
         break;
       case 'e':
         entryInfo = await database.query(
@@ -153,6 +155,7 @@ getEntry = async (req, res) => {
       trailer: entryInfo.rows[0].trailer,
       length: entryInfo.rows[0].length,
       rating: parseFloat(rating.rows[0].avg),
+      noEpisodes: parseInt(noEpisodes.rows[0].count),
       ratings: ratings,
       cast: cast,
     });
