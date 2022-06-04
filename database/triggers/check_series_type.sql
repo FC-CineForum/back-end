@@ -6,7 +6,7 @@ AS $$
 DECLARE
   entry_type CHAR (1);
 BEGIN
-  SELECT type INTO entry_type FROM entry WHERE id_entry = NEW.id_episode;
+  SELECT type INTO entry_type FROM entry WHERE id_entry = NEW.id_series;
   IF entry_type <> 's' THEN
     RAISE EXCEPTION 'Entry type does not match series type "s"';
   END IF;
