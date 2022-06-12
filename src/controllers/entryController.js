@@ -1,4 +1,3 @@
-const { response } = require('express');
 const { database } = require('../../database/config/index');
 
 const addMovie = async (req, res) => {
@@ -95,38 +94,49 @@ getEntry = async (req, res) => {
   const { id } = req.params;
   try {
     const entry = await database.query(
-      'SELECT * FROM entry WHERE id_entry = $1', [id]);
-    let entryInfo;
+    `SELECT title, synopsis, image, release, classification, type
+    FROM entry WHERE id_entry = $1`, [id]);
+    if (entry.rowCount === 0) return res.status(404).json({message: 'Entry not found'});
+    var entryInfo, response;
     switch (entry.rows[0].type) {
       case 'm':
         entryInfo = await database.query(
-          'SELECT * FROM movie WHERE id_movie = $1', [id]);
+          'SELECT trailer, length FROM movie WHERE id_movie = $1', [id]);
+        response = {
+          movie: entryInfo.rows[0],
+          entry: entry.rows[0],
+        };
         break;
-      case 's':
+      case 's': 
         entryInfo = await database.query(
-          'SELECT * FROM series WHERE id_series = $1', [id]);
-        var noEpisodes = await database.query(
+          'SELECT trailer FROM series WHERE id_series = $1', [id]);
+        let noEpisodes = await database.query(
           'SELECT COUNT(*) FROM episode WHERE id_series = $1', [id]);
+        response = {
+          series: entryInfo.rows[0],
+          entry: entry.rows[0],
+          noEpisodes: noEpisodes.rows[0].count,
+        };
         break;
       case 'e':
         entryInfo = await database.query(
           'SELECT * FROM episode WHERE id_episode = $1', [id]);
         break;
       default:
-        return res.status(404).json({  
-          message: 'Entry not found',
-        });
+        return res.status(404).json({ message: 'Info missing or wrong' });
     }
     const rating = await database.query(
-      `SELECT AVG(stars) FROM rating WHERE id_entry = $1`, [id]);
+      'SELECT AVG(stars) FROM rating WHERE id_entry = $1', [id]);
+      let ratings = [];  
     let comments = await database.query(
       'SELECT * FROM rating WHERE id_entry = $1', [id]);
-    let ratings = [];  
     for (let i=0; i < comments.rowCount; i++) {
       let reply = await database.query(
         'SELECT username, message FROM reply WHERE id_rating = $1', 
         [comments.rows[i].id_rating]);
+        console.log(comments.rows[i].id_rating);
       ratings.push({
+        ratingId: comments.rows[i].id_rating,
         username: comments.rows[i].username,
         stars: comments.rows[i].stars,
         message: comments.rows[i].message,
@@ -145,24 +155,11 @@ getEntry = async (req, res) => {
         role: castRole.rows[i].role,
         picture: celebrity.rows[0].picture,
       });
-    }
-    let response = {
-      title: entry.rows[0].title,
-      synopsis: entry.rows[0].synopsis,
-      image: entry.rows[0].image,
-      release: entry.rows[0].release,
-      classification: entry.rows[0].classification,
-      type: entry.rows[0].type,
-      trailer: entryInfo.rows[0].trailer,
-      length: entryInfo.rows[0].length,
-      rating: parseFloat(rating.rows[0].avg),
-      ratings: ratings,
-      cast: cast,
-    };
-    if (entry.rows[0].type === 's') {
-      response.noEpisodes = parseInt(noEpisodes.rows[0].count);
-    }
-    return res.status(200).json(response);
+    }    
+  response.rating = (rating.rows[0].avg).substring(0, 4);
+  response.ratings = ratings;
+  response.cast = cast;
+  return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error
@@ -181,6 +178,9 @@ getLatest = async (_, res) => {
           'SELECT * FROM entry WHERE id_entry = $1', [latest.rows[i].id_entry]);
         const movie = await database.query(
           'SELECT * FROM movie WHERE id_movie = $1', [latest.rows[i].id_entry]);
+        const rating = await database.query(
+          'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
+          [latest.rows[i].id_entry]);
         dashboard.push({
           id: entry.rows[0].id_entry,
           title: entry.rows[0].title,
@@ -191,14 +191,17 @@ getLatest = async (_, res) => {
           type: entry.rows[0].type,
           trailer: movie.rows[0].trailer,
           length: movie.rows[0].length,
+          rating: (rating.rows[0].avg).substring(0, 4),
         }); 
-        console.log(dashboard)
       } 
       if (latest.rows[i].type === 's') {
         entry = await database.query(
           'SELECT * FROM entry WHERE id_entry = $1', [latest.rows[i].id_entry]);
         const series = await database.query(
           'SELECT * FROM series WHERE id_series = $1', [latest.rows[i].id_entry]);
+          const rating = await database.query(
+            'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
+            [latest.rows[i].id_entry]);          
         dashboard.push({
           id: entry.rows[0].id_entry,
           title: entry.rows[0].title,
@@ -208,6 +211,7 @@ getLatest = async (_, res) => {
           classification: entry.rows[0].classification,
           type: entry.rows[0].type,
           trailer: series.rows[0].trailer,
+          rating: (rating.rows[0].avg).substring(0, 4),
         });
       }
     }
