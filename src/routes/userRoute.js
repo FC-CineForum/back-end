@@ -14,6 +14,12 @@ userValidator.reply, userController.reply);
 router.post('/like/:replyId',  
 userValidator.likes, userController.like);
 
+router.delete('/rating/:ratingId',  
+userValidator.declassification, userController.declassification);
+
+router.delete('/reply/:replyId',  
+userValidator.returnComment, userController.returnComment);
+
 router.delete('/like/:replyId',  
 userValidator.dislike, userController.dislike);
 

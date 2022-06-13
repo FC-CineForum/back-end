@@ -21,6 +21,20 @@ const rating = async (req, res) => {
   }
 }; 
 
+const declassification = async (req, res) => {
+  const { ratingId } = req.params;
+  try {
+    await database.query(
+      'DELETE FROM rating WHERE id_rating = $1', [ratingId]);
+    return res.status(200).json({
+      message: 'Rating deleted successfully'});
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+};
+
 const reply = async (req, res) => {
   const { ratingId } = req.params;
   const { username, message } = req.body;
@@ -39,6 +53,20 @@ const reply = async (req, res) => {
       error: 'Internal server error', error
     });
   } 
+};
+
+const returnComment = async (req, res) => {
+  const { replyId } = req.params;
+  try {
+    await database.query(
+      'DELETE FROM reply WHERE id_reply = $1', [replyId]);
+    return res.status(200).json({
+      message: 'Reply deleted successfully'});
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
 };
 
 const like = async (req, res) => {
@@ -76,7 +104,9 @@ const dislike = async (req, res) => {
 
 module.exports = {
   rating,
+  declassification,
   reply,
   like,
+  returnComment,
   dislike,
 };

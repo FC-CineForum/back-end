@@ -12,6 +12,12 @@ module.exports = {
     }),
   }),
 
+  declassification: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      ratingId: Joi.number().integer().required(),
+    }),
+  }),
+
   reply: celebrate({
     [Segments.PARAMS]: Joi.object().keys({
       ratingId: Joi.number().integer().required(), 
@@ -19,6 +25,12 @@ module.exports = {
     [Segments.BODY]: Joi.object().keys({
       username: Joi.string().max(30).required(),
       message: Joi.string().required(),
+    }),
+  }),
+
+  returnComment: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      replyId: Joi.number().integer().required(),
     }),
   }),
 
