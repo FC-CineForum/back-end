@@ -29,6 +29,22 @@ const signUp = async (req, res) => {
   });
 }
 
+const administrator = async (req, res) => {
+  const { username } = req.body;
+  const userExists = await database.query(
+    'SELECT * FROM administrator WHERE username = $1', [username]);
+  if (userExists.rowCount === 0) {
+    await database.query(`INSERT INTO administrator
+    (username) VALUES ($1)`, [username]);
+  return res.status(200).json({
+    message: `Administrator:${username} was created successfully`
+  });
+  }
+  return res.status(401).json({
+    message: 'The username is already taken!'
+  });
+}
+
 const logIn = async (req, res) => {
   const { email, password } = req.body;
   if  (!email || !password) return res.status(401).json({
@@ -103,6 +119,7 @@ const getUser = async (req, res) => {
 
 module.exports = {
   signUp,
+  administrator,
   logIn,
   verifyAccount,
   getUser,

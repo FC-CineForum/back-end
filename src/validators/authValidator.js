@@ -19,6 +19,12 @@ module.exports = {
     }), 
   }),
 
+  administrator: celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      username: Joi.string().min(6).max(30).required(),
+    }),
+  }),
+
   verifyAccount: celebrate({
     [Segments.QUERY]: Joi.object().keys({
       token: Joi.string().required(),
