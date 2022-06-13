@@ -44,6 +44,13 @@ module.exports = {
     }),
   }),
 
+  isLike: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      replyId: Joi.number().integer().required(),
+      username: Joi.string().max(30).required(),
+    }),
+  }),
+
   dislike: celebrate({
     [Segments.PARAMS]: Joi.object().keys({
       replyId: Joi.number().integer().required(),

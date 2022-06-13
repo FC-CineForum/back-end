@@ -87,6 +87,21 @@ const like = async (req, res) => {
   }
 };
 
+const isLike = async (req, res) => {
+  const { replyId, username } = req.params;
+  try {
+    const isLike = await database.query(
+      'SELECT is_like FROM likes WHERE id_reply = $1 AND username = $2',
+      [replyId, username]);
+    return !isLike.rows[0] ? res.status(200).json({ message: false }) :
+    res.status(200).json({ message: true });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+}
+
 const dislike = async (req, res) => {
   const { replyId } = req.params;
   try {
@@ -107,6 +122,7 @@ module.exports = {
   declassification,
   reply,
   like,
+  isLike,
   returnComment,
   dislike,
 };
