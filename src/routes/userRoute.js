@@ -14,7 +14,7 @@ userValidator.reply, userController.reply);
 router.post('/like/:replyId',  
 userValidator.likes, userController.like);
 
-router.get('/like/:replyId/:username', 
+router.get('/like/:ratingId/:username', 
 userValidator.isLike, userController.isLike);
 
 router.delete('/rating/:ratingId',  

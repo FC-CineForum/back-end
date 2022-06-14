@@ -46,7 +46,7 @@ module.exports = {
 
   isLike: celebrate({
     [Segments.PARAMS]: Joi.object().keys({
-      replyId: Joi.number().integer().required(),
+      ratingId: Joi.number().integer().required(),
       username: Joi.string().max(30).required(),
     }),
   }),
@@ -54,6 +54,21 @@ module.exports = {
   dislike: celebrate({
     [Segments.PARAMS]: Joi.object().keys({
       replyId: Joi.number().integer().required(),
+    }),
+  }),
+
+  createPlaylist: celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      list_name: Joi.string().max(30).required(),
+      username: Joi.string().max(30).required,
+      is_public: Joi.boolean().required(),
+      description: Joi.string().max(280).optional(),
+    }),
+  }),
+
+  getPlaylist: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      username: Joi.string().max(30).required(),
     }),
   }),
 };

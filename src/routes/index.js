@@ -5,5 +5,6 @@ router.use(require('./authRoute'));
 router.use(require('./entryRoute'));
 router.use(require('./userRoute'));
 router.use(require('./celebrityRoute'));
+router.use(require('./playlistRoute'));
 
 module.exports = router;
