@@ -88,11 +88,11 @@ const like = async (req, res) => {
 };
 
 const isLike = async (req, res) => {
-  const { replyId, username } = req.params;
+  const { ratingId, username } = req.params;
   try {
     const isLike = await database.query(
-      'SELECT is_like FROM likes WHERE id_reply = $1 AND username = $2',
-      [replyId, username]);
+      'SELECT is_like FROM likes WHERE id_rating = $1 AND username = $2',
+      [ratingId, username]);
     return !isLike.rows[0] ? res.status(200).json({ message: false }) :
     res.status(200).json({ message: true });
   } catch (error) {
@@ -100,7 +100,7 @@ const isLike = async (req, res) => {
       error: 'Internal server error', error
     });
   }
-}
+};
 
 const dislike = async (req, res) => {
   const { replyId } = req.params;
@@ -117,12 +117,29 @@ const dislike = async (req, res) => {
   }
 };
 
+const createPlaylist = async (req, res) => {
+  const { listName, username, isPublic, description } = req.body;
+  try {
+    await database.query(
+      `INSERT INTO playlist (list_name, username, is_public, description)
+      VALUES ($1, $2, $3, $4) RETURNING id_playlist`, 
+      [listName, username, isPublic, description]);
+    return res.status(200).json({
+      message: 'Playlist created successfully'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error', error
+    });
+  }
+}
+
 module.exports = {
   rating,
   declassification,
   reply,
+  returnComment,
   like,
   isLike,
-  returnComment,
   dislike,
 };
