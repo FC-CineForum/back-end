@@ -36,7 +36,7 @@ module.exports = {
 
   likes: celebrate({
     [Segments.PARAMS]: Joi.object().keys({
-      replyId: Joi.number().integer().required(),
+      ratingId: Joi.number().integer().required(),
     }),
     [Segments.BODY]: Joi.object().keys({
       username: Joi.string().max(30).required(),
@@ -53,7 +53,7 @@ module.exports = {
 
   dislike: celebrate({
     [Segments.PARAMS]: Joi.object().keys({
-      replyId: Joi.number().integer().required(),
+      ratingId: Joi.number().integer().required(),
     }),
   }),
 

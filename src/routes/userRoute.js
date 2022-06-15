@@ -11,7 +11,7 @@ userValidator.rating, userController.rating);
 router.post('/reply/:ratingId',  
 userValidator.reply, userController.reply);
 
-router.post('/like/:replyId',  
+router.post('/like/:ratingId',  
 userValidator.likes, userController.like);
 
 router.get('/like/:ratingId/:username', 
@@ -23,7 +23,7 @@ userValidator.declassification, userController.declassification);
 router.delete('/reply/:replyId',  
 userValidator.returnComment, userController.returnComment);
 
-router.delete('/like/:replyId',  
+router.delete('/like/:ratingId',  
 userValidator.dislike, userController.dislike);
 
 module.exports = router;

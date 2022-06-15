@@ -70,12 +70,12 @@ const returnComment = async (req, res) => {
 };
 
 const like = async (req, res) => {
-  const { replyId } = req.params;
+  const { ratingId } = req.params;
   const { username, isLike } = req.body;
   try {
     await database.query(
-      'INSERT INTO likes (username, id_reply, is_like) VALUES ($1, $2, $3)',
-      [username, replyId, isLike]);
+      'INSERT INTO likes (username, id_rating, is_like) VALUES ($1, $2, $3)',
+      [username, ratingId, isLike]);
     console.log(like);
     return res.status(200).json({
       message: `Like ${isLike}`,
@@ -103,10 +103,10 @@ const isLike = async (req, res) => {
 };
 
 const dislike = async (req, res) => {
-  const { replyId } = req.params;
+  const { ratingId } = req.params;
   try {
     await database.query(
-      'DELETE FROM likes WHERE id_reply = $1', [replyId]);
+      'DELETE FROM likes WHERE id_rating = $1', [ratingId]);
     return res.status(200).json({
       message: 'Like deleted'
     });
