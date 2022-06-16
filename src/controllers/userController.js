@@ -98,16 +98,16 @@ const like = async (req, res) => {
 const isLike = async (req, res) => {
   const { ratingId, username } = req.params;
   try {
-    const isLike = await database.query(
+    const like = await database.query(
       'SELECT is_like FROM likes WHERE id_rating = $1 AND username = $2',
       [ratingId, username]);
-    return !isLike.rows[0] ? res.status(200).json({ message: false }) :
-    res.status(200).json({ message: true });
+    return like.rowCount === 0 ? res.status(200).json({ message: "missing interaction" }) :
+    res.status(200).json({ message: `like is ${like.rows[0].is_like}` });
   } catch (error) {
     return res.status(500).json({
       error: 'Internal server error', error
     });
-  }
+  } 
 };
 
 const dislike = async (req, res) => {
