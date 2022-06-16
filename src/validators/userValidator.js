@@ -55,6 +55,9 @@ module.exports = {
     [Segments.PARAMS]: Joi.object().keys({
       ratingId: Joi.number().integer().required(),
     }),
+    [Segments.BODY]: Joi.object().keys({
+      username: Joi.string().max(30).required(),
+    }),
   }),
 
   createPlaylist: celebrate({

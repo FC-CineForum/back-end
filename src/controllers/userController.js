@@ -71,14 +71,22 @@ const returnComment = async (req, res) => {
 
 const like = async (req, res) => {
   const { ratingId } = req.params;
-  const { username, isLike } = req.body;
+  var { username, isLike } = req.body;
   try {
+    const exist = await database.query(
+      'SELECT * FROM likes WHERE id_rating = $1 AND username = $2',
+      [ratingId, username]);
+    if (exist.rowCount === 0) {
     await database.query(
       'INSERT INTO likes (username, id_rating, is_like) VALUES ($1, $2, $3)',
       [username, ratingId, isLike]);
-    console.log(like);
+    } else {
+      await database.query(
+        'UPDATE likes SET is_like = $1 WHERE id_rating = $2 AND username = $3',
+        [isLike, ratingId, username]);
+    }
     return res.status(200).json({
-      message: `Like ${isLike}`,
+      message: `Interaction: like is ${isLike}`,
     });
   } catch (error) {
     return res.status(500).json({
@@ -104,11 +112,13 @@ const isLike = async (req, res) => {
 
 const dislike = async (req, res) => {
   const { ratingId } = req.params;
+  const { username } = req.body;
   try {
     await database.query(
-      'DELETE FROM likes WHERE id_rating = $1', [ratingId]);
+      'DELETE FROM likes WHERE id_rating = $1 AND username = $2', 
+      [ratingId, username]);
     return res.status(200).json({
-      message: 'Like deleted'
+      message: 'Interaction was deleted'
     });
   } catch (error) {
     return res.status(500).json({
