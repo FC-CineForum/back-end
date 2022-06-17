@@ -156,7 +156,7 @@ getEntry = async (req, res) => {
         picture: celebrity.rows[0].picture,
       });
     }    
-  response.rating = (rating.rows[0].avg).substring(0, 4);
+  response.rating = rating.rows[0].avg === null ? 'N/A' : rating.rows[0].avg.substring(0, 4),
   response.ratings = ratings;
   response.cast = cast;
   return res.status(200).json(response);
@@ -181,7 +181,6 @@ getLatest = async (_, res) => {
         const rating = await database.query(
           'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
           [latest.rows[i].id_entry]); 
-          console.log(rating);
         dashboard.push({
           id: entry.rows[0].id_entry,
           title: entry.rows[0].title,
