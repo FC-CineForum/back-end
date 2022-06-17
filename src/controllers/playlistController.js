@@ -19,6 +19,12 @@ const createPlaylist = async (req, res) => {
 const addEntry = async (req, res) => {
   const { entryId, username, listName } = req.body;
   try {
+    const exists = await database.query(
+      `SELECT * FROM playlist_entry WHERE username = $1 AND list_name = $2 
+      AND id_entry = $3`, [username, listName, entryId]);
+    if (exists.rowCount === 1) {
+      return res.status(401).json({ message: "Entry already is on playlist"})
+    }
     await database.query(
       `INSERT INTO playlist_entry (id_entry, list_name, username) 
       VALUES ($1, $2, $3)`, [entryId, listName, username]);
@@ -30,17 +36,19 @@ const addEntry = async (req, res) => {
       error: 'Internal server error', error
     });
   }
-};
+}; 
 
 const getPlaylist = async (req, res) => {
   const { username } = req.params;
   try {
-    const playlist = await database.query(
-      'SELECT list_name, is_public FROM playlist WHERE username = $1', [username]);
-      console.log(playlist.rows);
-    return res.status(200).json({
-      playlist: [playlist.rows],
-    });
+    var result;
+    const entries = await database.query(
+      'SELECT id_entry FROM playlist_entry WHERE username = $1', [username]);
+    for (let i = 0; i < entries.rowCount; i++) {
+      let entry = await database.query(
+        `SELECT * FROM entry WHERE id_entry = $1`, [entries.rows[i].id_entry]);
+        
+    }
   } catch (error) {
     return res.status(500).json({ 
       error: 'Internal server error', error

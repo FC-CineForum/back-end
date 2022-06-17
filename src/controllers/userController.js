@@ -127,23 +127,6 @@ const dislike = async (req, res) => {
   }
 };
 
-const createPlaylist = async (req, res) => {
-  const { listName, username, isPublic, description } = req.body;
-  try {
-    await database.query(
-      `INSERT INTO playlist (list_name, username, is_public, description)
-      VALUES ($1, $2, $3, $4) RETURNING id_playlist`, 
-      [listName, username, isPublic, description]);
-    return res.status(200).json({
-      message: 'Playlist created successfully'
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: 'Internal server error', error
-    });
-  }
-}
-
 module.exports = {
   rating,
   declassification,

@@ -170,9 +170,9 @@ getEntry = async (req, res) => {
 getLatest = async (_, res) => {
   try {
     const latest = await database.query(`SELECT * FROM last_inserted_entry`);
-    let dashboard = [];
+    var dashboard = [];
     for (let i = 0; i < latest.rowCount; i++) {
-      let entry;
+      var entry;
       if(latest.rows[i].type === 'm') {
         entry = await database.query(
           'SELECT * FROM entry WHERE id_entry = $1', [latest.rows[i].id_entry]);
@@ -180,7 +180,8 @@ getLatest = async (_, res) => {
           'SELECT * FROM movie WHERE id_movie = $1', [latest.rows[i].id_entry]);
         const rating = await database.query(
           'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
-          [latest.rows[i].id_entry]);
+          [latest.rows[i].id_entry]); 
+          console.log(rating);
         dashboard.push({
           id: entry.rows[0].id_entry,
           title: entry.rows[0].title,
@@ -191,17 +192,18 @@ getLatest = async (_, res) => {
           type: entry.rows[0].type,
           trailer: movie.rows[0].trailer,
           length: movie.rows[0].length,
-          rating: (rating.rows[0].avg).substring(0, 4),
+          rating: rating.rows[0].avg === null ? 'N/A' : rating.rows[0].avg.substring(0, 4),
         }); 
       } 
       if (latest.rows[i].type === 's') {
         entry = await database.query(
           'SELECT * FROM entry WHERE id_entry = $1', [latest.rows[i].id_entry]);
-        const series = await database.query(
+          const series = await database.query(
           'SELECT * FROM series WHERE id_series = $1', [latest.rows[i].id_entry]);
           const rating = await database.query(
             'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
-            [latest.rows[i].id_entry]);          
+            [latest.rows[i].id_entry]);   
+            console.log(rating);  
         dashboard.push({
           id: entry.rows[0].id_entry,
           title: entry.rows[0].title,
@@ -211,12 +213,13 @@ getLatest = async (_, res) => {
           classification: entry.rows[0].classification,
           type: entry.rows[0].type,
           trailer: series.rows[0].trailer,
-          rating: (rating.rows[0].avg).substring(0, 4),
+          rating: rating.rows[0].avg === null ? 'N/A' : rating.rows[0].avg.substring(0, 4),
         });
       }
     }
     return res.status(200).json(dashboard);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       error: 'Internal server error', error
     });
