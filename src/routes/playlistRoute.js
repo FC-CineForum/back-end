@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { playlistController } = require('../controllers');
-const { playlistValidator } = require('../validators')
+const { playlistValidator } = require('../validators/index.js')
 
 const router = express.Router();
 
