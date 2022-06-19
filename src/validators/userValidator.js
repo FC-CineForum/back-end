@@ -74,4 +74,10 @@ module.exports = {
       username: Joi.string().max(30).required(),
     }),
   }),
+
+  find: celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      name: Joi.string().max(30).required(),
+    }),
+  }),
 };

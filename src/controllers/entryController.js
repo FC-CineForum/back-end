@@ -156,7 +156,7 @@ getEntry = async (req, res) => {
         picture: celebrity.rows[0].picture,
       });
     }    
-  response.rating = rating.rows[0].avg === null ? 'N/A' : rating.rows[0].avg.substring(0, 4),
+  response.rating = rating.rows[0].avg === null ? '0' : rating.rows[0].avg.substring(0, 4),
   response.ratings = ratings;
   response.cast = cast;
   return res.status(200).json(response);
@@ -191,7 +191,7 @@ getLatest = async (_, res) => {
           type: entry.rows[0].type,
           trailer: movie.rows[0].trailer,
           length: movie.rows[0].length,
-          rating: rating.rows[0].avg === null ? 'N/A' : rating.rows[0].avg.substring(0, 4),
+          rating: rating.rows[0].avg === null ? '0' : rating.rows[0].avg.substring(0, 4),
         }); 
       } 
       if (latest.rows[i].type === 's') {
@@ -212,7 +212,7 @@ getLatest = async (_, res) => {
           classification: entry.rows[0].classification,
           type: entry.rows[0].type,
           trailer: series.rows[0].trailer,
-          rating: rating.rows[0].avg === null ? 'N/A' : rating.rows[0].avg.substring(0, 4),
+          rating: rating.rows[0].avg === null ? '0' : rating.rows[0].avg.substring(0, 4),
         });
       }
     }
