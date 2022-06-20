@@ -6,10 +6,7 @@ const { authController } = require('../controllers');
 const router = express.Router();
 
 router.post('/signUp',  
-authValidator.signUp, authController.signUp);
-
-router.post('/administrator',  
-authValidator.administrator, authController.administrator);
+authValidator.signUp, authController.signUp); 
 
 router.post('/logIn',  
 authValidator.logIn, authController.logIn);
@@ -19,5 +16,11 @@ authValidator.verifyAccount, authController.verifyAccount);
 
 router.get('/getUser/',
 authValidator.getUser, authController.getUser);
+
+router.post('/admin/:username',
+authValidator.admin, authController.setAdmin);
+
+//router.delete('/admin/:username',
+//authValidator.admin, authController.deleteAdmin);
 
 module.exports = router;

@@ -134,7 +134,6 @@ getEntry = async (req, res) => {
       let reply = await database.query(
         'SELECT username, message FROM reply WHERE id_rating = $1', 
         [comments.rows[i].id_rating]);
-        console.log(comments.rows[i].id_rating);
       ratings.push({
         ratingId: comments.rows[i].id_rating,
         username: comments.rows[i].username,

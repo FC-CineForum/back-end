@@ -43,4 +43,10 @@ module.exports = {
       authorization: Joi.string().required(),
     }).unknown(),
   }),
+
+  admin: celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      username: Joi.string().max(30).required(),
+    }),
+  }),
 }

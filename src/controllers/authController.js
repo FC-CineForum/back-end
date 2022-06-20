@@ -27,9 +27,9 @@ const signUp = async (req, res) => {
   return res.status(401).json({ 
     message: 'The email is already taken!' 
   });
-}
+};
 
-const administrator = async (req, res) => {
+const setAdmin = async (req, res) => {
   const { username } = req.body;
   const userExists = await database.query(
     'SELECT * FROM administrator WHERE username = $1', [username]);
@@ -43,7 +43,14 @@ const administrator = async (req, res) => {
   return res.status(401).json({
     message: 'The username is already taken!'
   });
-}
+};
+
+//const deleteAdmin = async (req, res) => {
+//  const { username } = req.body;
+//  const userExists = await database.query(
+//    'SELECT * FROM administrator WHERE username = $1', [username]);
+//  if (userExists.rowCount === 1) {
+//    await database.query(`DELETE FROM administrator WHERE username = $1`, [username]);
 
 const logIn = async (req, res) => {
   const { email, password } = req.body;
@@ -72,7 +79,7 @@ const logIn = async (req, res) => {
   return res.status(401).json({
     message: 'Password or email is incorrect'
   });
-}
+};
 
 const verifyAccount = async (req, res) => { 
   const { token } = req.query;
@@ -90,7 +97,7 @@ const verifyAccount = async (req, res) => {
       message: 'Token expired'
     });
   }
-}
+};
 
 const getUser = async (req, res) => {
   const bearerHeaders = req.headers["authorization"];
@@ -115,11 +122,11 @@ const getUser = async (req, res) => {
       message: 'Token expired'
     });
   }
-}
+};
 
 module.exports = {
   signUp,
-  administrator,
+  setAdmin,
   logIn,
   verifyAccount,
   getUser,
