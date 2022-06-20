@@ -33,7 +33,7 @@ module.exports = {
 
   logIn: celebrate({
     [Segments.BODY]: Joi.object().keys({
-      email: Joi.string().max(50).required(),
+      any: Joi.string().max(50).optional(),
       password: Joi.string().min(2).required(),
     }),
   }),

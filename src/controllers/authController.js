@@ -53,13 +53,14 @@ const setAdmin = async (req, res) => {
 //    await database.query(`DELETE FROM administrator WHERE username = $1`, [username]);
 
 const logIn = async (req, res) => {
-  const { email, password } = req.body;
-  if  (!email || !password) return res.status(401).json({
-    message: 'Email and password are required'
-  });
-  const user = await database.query(
-    'SELECT * FROM users u WHERE u.email = $1', [email]
-  );
+  const { any, password } = req.body;
+  var user;
+  let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (emailRegex.test(any)) {
+    user = await database.query('SELECT * FROM users WHERE email = $1', [any]);
+  } else {
+    user = await database.query('SELECT * FROM users WHERE username = $1', [any]);
+  }
   if (user.rowCount !== 1) return res.status(401).json({
       message: 'User not found'
   });
