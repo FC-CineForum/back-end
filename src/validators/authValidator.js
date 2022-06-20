@@ -19,12 +19,6 @@ module.exports = {
     }), 
   }),
 
-  administrator: celebrate({
-    [Segments.BODY]: Joi.object().keys({
-      username: Joi.string().min(6).max(30).required(),
-    }),
-  }),
-
   verifyAccount: celebrate({
     [Segments.QUERY]: Joi.object().keys({
       token: Joi.string().required(),
@@ -45,7 +39,7 @@ module.exports = {
   }),
 
   admin: celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
+    [Segments.BODY]: Joi.object().keys({
       username: Joi.string().max(30).required(),
     }),
   }),

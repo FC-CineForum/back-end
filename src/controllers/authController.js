@@ -41,16 +41,25 @@ const setAdmin = async (req, res) => {
   });
   }
   return res.status(401).json({
-    message: 'The username is already taken!'
+    message: 'Already admin dude'
   });
 };
 
-//const deleteAdmin = async (req, res) => {
-//  const { username } = req.body;
-//  const userExists = await database.query(
-//    'SELECT * FROM administrator WHERE username = $1', [username]);
-//  if (userExists.rowCount === 1) {
-//    await database.query(`DELETE FROM administrator WHERE username = $1`, [username]);
+const deleteAdmin = async (req, res) => {
+  const { username } = req.body;
+  const userExists = await database.query(
+    'SELECT * FROM administrator WHERE username = $1', [username]);
+  if (userExists.rowCount === 1) {
+    await database.query(`DELETE FROM administrator WHERE username = $1`, [username]);
+  await database.query(`DELETE FROM users WHERE username = $1`, [username]);
+  return res.status(200).json({
+    message: `Administrator:${username} was deleted successfully`
+  });
+  }
+  return res.status(401).json({
+    message: 'Not admin dude'
+  });
+}
 
 const logIn = async (req, res) => {
   const { any, password } = req.body;
@@ -128,6 +137,7 @@ const getUser = async (req, res) => {
 module.exports = {
   signUp,
   setAdmin,
+  deleteAdmin,
   logIn,
   verifyAccount,
   getUser,

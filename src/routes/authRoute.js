@@ -17,10 +17,10 @@ authValidator.verifyAccount, authController.verifyAccount);
 router.get('/getUser/',
 authValidator.getUser, authController.getUser);
 
-router.post('/admin/:username',
+router.post('/admin',
 authValidator.admin, authController.setAdmin);
 
-//router.delete('/admin/:username',
-//authValidator.admin, authController.deleteAdmin);
+router.delete('/admin',
+authValidator.admin, authController.deleteAdmin);
 
 module.exports = router;
