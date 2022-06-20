@@ -261,7 +261,7 @@ CREATE TABLE likes (
   username VARCHAR (30) NOT NULL,
   id_rating INT NOT NULL,
   is_like BOOLEAN NOT NULL,
-  PRIMARY KEY (username, id_reply),
+  PRIMARY KEY (username, id_rating),
   FOREIGN KEY (username)
     REFERENCES users (username)
     ON DELETE CASCADE
