@@ -191,7 +191,7 @@ CREATE TABLE roles (
 
 -- LISTS
 
-CREATE TABLE list (
+CREATE TABLE playlist (
   list_name VARCHAR (60) NOT NULL,
   username VARCHAR (30) NOT NULL,
   is_public BOOLEAN NOT NULL DEFAULT FALSE,
@@ -207,13 +207,13 @@ CREATE TABLE list (
     CHECK (date_created <= date_modified)
 );
 
-CREATE TABLE list_movies (
+CREATE TABLE playlist_entry (
   id_entry INT NOT NULL,
   list_name VARCHAR (60) NOT NULL,
   username VARCHAR (30) NOT NULL,
   PRIMARY KEY (id_entry, list_name, username),
   FOREIGN KEY (list_name, username)
-    REFERENCES list (list_name, username)
+    REFERENCES playlist (list_name, username)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (username)
@@ -259,15 +259,15 @@ CREATE TABLE reply (
 
 CREATE TABLE likes (
   username VARCHAR (30) NOT NULL,
-  id_reply INT NOT NULL,
+  id_rating INT NOT NULL,
   is_like BOOLEAN NOT NULL,
-  PRIMARY KEY (username, id_reply),
+  PRIMARY KEY (username, id_rating),
   FOREIGN KEY (username)
     REFERENCES users (username)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  FOREIGN KEY (id_reply)
-    REFERENCES reply (id_reply)
+  FOREIGN KEY (id_rating)
+    REFERENCES rating (id_rating)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

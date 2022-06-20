@@ -20,14 +20,14 @@ module.exports = {
   }),
 
   verifyAccount: celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
+    [Segments.QUERY]: Joi.object().keys({
       token: Joi.string().required(),
     }),
   }),
 
   logIn: celebrate({
     [Segments.BODY]: Joi.object().keys({
-      email: Joi.string().max(50).required(),
+      any: Joi.string().max(50).optional(),
       password: Joi.string().min(2).required(),
     }),
   }),
@@ -36,5 +36,11 @@ module.exports = {
     [Segments.HEADERS]: Joi.object().keys({
       authorization: Joi.string().required(),
     }).unknown(),
+  }),
+
+  admin: celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      username: Joi.string().max(30).required(),
+    }),
   }),
 }

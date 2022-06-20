@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { entryController } = require('../controllers');
-const { entryValidator } = require('../validators')
+const { entryValidator } = require('../validators');
 
 const router = express.Router();
 

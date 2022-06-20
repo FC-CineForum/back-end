@@ -27,16 +27,49 @@ const signUp = async (req, res) => {
   return res.status(401).json({ 
     message: 'The email is already taken!' 
   });
+};
+
+const setAdmin = async (req, res) => {
+  const { username } = req.body;
+  const userExists = await database.query(
+    'SELECT * FROM administrator WHERE username = $1', [username]);
+  if (userExists.rowCount === 0) {
+    await database.query(`INSERT INTO administrator
+    (username) VALUES ($1)`, [username]);
+  return res.status(200).json({
+    message: `Administrator:${username} was created successfully`
+  });
+  }
+  return res.status(401).json({
+    message: 'Already admin dude'
+  });
+};
+
+const deleteAdmin = async (req, res) => {
+  const { username } = req.body;
+  const userExists = await database.query(
+    'SELECT * FROM administrator WHERE username = $1', [username]);
+  if (userExists.rowCount === 1) {
+    await database.query(`DELETE FROM administrator WHERE username = $1`, [username]);
+  await database.query(`DELETE FROM users WHERE username = $1`, [username]);
+  return res.status(200).json({
+    message: `Administrator:${username} was deleted successfully`
+  });
+  }
+  return res.status(401).json({
+    message: 'Not admin dude'
+  });
 }
 
 const logIn = async (req, res) => {
-  const { email, password } = req.body;
-  if  (!email || !password) return res.status(401).json({
-    message: 'Email and password are required'
-  });
-  const user = await database.query(
-    'SELECT * FROM users u WHERE u.email = $1', [email]
-  );
+  const { any, password } = req.body;
+  var user;
+  let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (emailRegex.test(any)) {
+    user = await database.query('SELECT * FROM users WHERE email = $1', [any]);
+  } else {
+    user = await database.query('SELECT * FROM users WHERE username = $1', [any]);
+  }
   if (user.rowCount !== 1) return res.status(401).json({
       message: 'User not found'
   });
@@ -56,10 +89,10 @@ const logIn = async (req, res) => {
   return res.status(401).json({
     message: 'Password or email is incorrect'
   });
-}
+};
 
 const verifyAccount = async (req, res) => { 
-  const { token } = req.params;
+  const { token } = req.query;
   try {
     const user = authMiddleware.verifyTokenEmail(token);
     await database.query(
@@ -74,7 +107,7 @@ const verifyAccount = async (req, res) => {
       message: 'Token expired'
     });
   }
-}
+};
 
 const getUser = async (req, res) => {
   const bearerHeaders = req.headers["authorization"];
@@ -99,10 +132,12 @@ const getUser = async (req, res) => {
       message: 'Token expired'
     });
   }
-}
+};
 
 module.exports = {
   signUp,
+  setAdmin,
+  deleteAdmin,
   logIn,
   verifyAccount,
   getUser,
