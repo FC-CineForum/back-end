@@ -76,7 +76,7 @@ module.exports = {
   }),
 
   find: celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
+    [Segments.QUERY]: Joi.object().keys({
       word: Joi.string().max(30).required(),
     }),
   }),
