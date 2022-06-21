@@ -45,7 +45,7 @@ const getPlaylist = async (req, res) => {
     var playlist = await database.query(
       `SELECT list_name FROM playlist WHERE username = $1`, [username]);
     if (playlist.rowCount === 0) {
-      return res.status(404).json({ message: 'Any playlist not found' });
+      return res.status(404).json({ message: 'Playlist not found' });
     }
     for (let i = 0; i < playlist.rows.length; i++) {
       let entry = await database.query(
