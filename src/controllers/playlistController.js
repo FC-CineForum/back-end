@@ -44,6 +44,9 @@ const getPlaylist = async (req, res) => {
     var result = [];
     var playlist = await database.query(
       `SELECT list_name FROM playlist WHERE username = $1`, [username]);
+    if (playlist.rowCount === 0) {
+      return res.status(404).json({ message: 'Any playlist not found' });
+    }
     for (let i = 0; i < playlist.rows.length; i++) {
       let entry = await database.query(
         `SELECT title, image FROM entry WHERE id_entry IN (SELECT id_entry FROM playlist_entry WHERE list_name = $1)`,
