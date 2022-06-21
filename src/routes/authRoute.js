@@ -23,4 +23,7 @@ authValidator.admin, authController.setAdmin);
 router.delete('/admin',
 authValidator.admin, authController.deleteAdmin);
 
+router.delete('/user', 
+authValidator.username, authController.deleteUser);
+
 module.exports = router;

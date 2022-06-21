@@ -134,6 +134,28 @@ const getUser = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  const { username } = req.query;
+  try {
+    const userExists = await database.query(
+      'SELECT * FROM users WHERE username = $1', ["LeslieRamirez"]);
+    if (userExists.rowCount === 1) {
+      let bug = await database.query(`DELETE FROM users WHERE username = $1`, ["LeslieRamirez"]);
+      console.log(bug);
+      return res.status(200).json({
+        message: `User:${username} was deleted successfully`
+      });
+    }
+    return res.status(401).json({
+      message: 'User not found'
+    });
+  } catch (error) {
+    return res.status(401).json({
+      message: 'Error ocurred deleting user', error
+    });
+  }
+}
+
 module.exports = {
   signUp,
   setAdmin,
@@ -141,4 +163,5 @@ module.exports = {
   logIn,
   verifyAccount,
   getUser,
+  deleteUser,
 } 
