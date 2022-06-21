@@ -41,15 +41,28 @@ const addEntry = async (req, res) => {
 const getPlaylist = async (req, res) => {
   const { username } = req.params;
   try {
-    var result;
-    const entries = await database.query(
-      'SELECT id_entry FROM playlist_entry WHERE username = $1', [username]);
-    for (let i = 0; i < entries.rowCount; i++) {
+    var result = [];
+    var playlist = await database.query(
+      `SELECT list_name FROM playlist WHERE username = $1`, [username]);
+    for (let i = 0; i < playlist.rows.length; i++) {
       let entry = await database.query(
-        `SELECT * FROM entry WHERE id_entry = $1`, [entries.rows[i].id_entry]);
-        
+        `SELECT title, image FROM entry WHERE id_entry IN (SELECT id_entry FROM playlist_entry WHERE list_name = $1)`,
+        [playlist.rows[i].list_name]);
+      if (entry.rowCount > 0) {
+        result.push({
+          playlist: playlist.rows[i].list_name,
+          image: entry.rows[0].image,
+        });
+      } else {
+        result.push({
+          playlist: playlist.rows[i].list_name,
+          image: 'S/N',
+        });
+      }
     }
+    return res.status(200).json(result);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ 
       error: 'Internal server error', error
     });
