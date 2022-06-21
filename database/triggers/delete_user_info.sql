@@ -4,7 +4,7 @@ delete_user_info_fn()
 RETURNS TRIGGER
 AS $$
 BEGIN
-  DELETE FROM list
+  DELETE FROM playlist
   WHERE username = NEW.username;
 
   DELETE FROM administrator
