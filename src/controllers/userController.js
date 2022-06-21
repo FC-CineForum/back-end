@@ -129,11 +129,12 @@ const dislike = async (req, res) => {
 };
 
 const find = async (req, res) => {
-  const { name } = req.body;  
+    let { word } = req.query;
   try {
+    console.log(word);
     var final = [];
     const entry = await database.query(
-      `SELECT * FROM entry WHERE title ILIKE '%${name}%'`, []);
+      `SELECT * FROM entry WHERE title ILIKE '%${word}%'`, []);
     for (let i = 0; i < entry.rowCount; i++) {
       let rating = await database.query(
         'SELECT AVG(stars) FROM rating WHERE id_entry = $1', [entry.rows[i].id_entry]);

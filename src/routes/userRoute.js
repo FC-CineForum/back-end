@@ -17,8 +17,7 @@ userValidator.likes, userController.like);
 router.get('/like/:ratingId/:username', 
 userValidator.isLike, userController.isLike);
 
-router.get('/find', 
-userValidator.find, userController.find);
+router.get('/find/', userValidator.find, userController.find);
 
 router.delete('/rating/:ratingId',  
 userValidator.declassification, userController.declassification);
