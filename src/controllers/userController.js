@@ -129,7 +129,7 @@ const dislike = async (req, res) => {
 };
 
 const find = async (req, res) => {
-  const { name } = req.body;  
+  const { name } = req.params;  
   try {
     var final = [];
     const entry = await database.query(
