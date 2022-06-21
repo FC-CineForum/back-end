@@ -65,15 +65,77 @@ const getPlaylist = async (req, res) => {
     }
     return res.status(200).json(result);
   } catch (error) {
-    console.log(error)
     return res.status(500).json({ 
       error: 'Internal server error', error
     });
   }
 };
 
+const playlist = async (req, res) => {
+  const { username, name } = req.params;
+  try{
+    var info = [];
+    let playlistInfo = await database.query(
+      'SELECT * FROM playlist_entry WHERE username = $1 AND list_name = $2',
+      [username, name]);
+    for (let i = 0; i < playlistInfo.rowCount; i++) {
+      let entryInfo = await database.query(
+        'SELECT * FROM entry WHERE id_entry = $1', [playlistInfo.rows[i].id_entry]);
+      if(entryInfo.rows[0].type === 'm') {
+        entry = await database.query(
+          'SELECT * FROM entry WHERE id_entry = $1', [playlistInfo.rows[i].id_entry]);
+        const movie = await database.query(
+          'SELECT * FROM movie WHERE id_movie = $1', [playlistInfo.rows[i].id_entry]);
+        const rating = await database.query(
+          'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
+          [playlistInfo.rows[i].id_entry]); 
+        info.push({
+          id: entry.rows[0].id_entry,
+          title: entry.rows[0].title,
+          synopsis: entry.rows[0].synopsis,
+          image: entry.rows[0].image,
+          release: entry.rows[0].release,
+          classification: entry.rows[0].classification,
+          type: entry.rows[0].type,
+          trailer: movie.rows[0].trailer,
+          length: movie.rows[0].length,
+          rating: rating.rows[0].avg === null ? '0' : rating.rows[0].avg.substring(0, 4),
+        }); 
+        console.log(info);
+      } 
+      if (entryInfo.rows[0].type === 's') {
+        entry = await database.query(
+          'SELECT * FROM entry WHERE id_entry = $1', [playlistInfo.rows[i].id_entry]);
+          const series = await database.query(
+          'SELECT * FROM series WHERE id_series = $1', [playlistInfo.rows[i].id_entry]);
+          const rating = await database.query(
+            'SELECT AVG(stars) FROM rating WHERE id_entry = $1', 
+            [playlistInfo.rows[i].id_entry]);   
+            console.log(rating);  
+        info.push({
+          id: entry.rows[0].id_entry,
+          title: entry.rows[0].title,
+          synopsis: entry.rows[0].synopsis,
+          image: entry.rows[0].image,
+          release: entry.rows[0].release,
+          classification: entry.rows[0].classification,
+          type: entry.rows[0].type,
+          trailer: series.rows[0].trailer,
+          rating: rating.rows[0].avg === null ? '0' : rating.rows[0].avg.substring(0, 4),
+        });
+      }
+    }
+    return res.status(200).json(info);
+  } catch (error) {
+    return res.status(500).json({ 
+      error: 'Internal server error', error
+    });
+  }
+} 
+
 module.exports = {
   createPlaylist,
   addEntry,
   getPlaylist,
+  playlist,
 }

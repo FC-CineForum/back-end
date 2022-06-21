@@ -14,4 +14,7 @@ playlistValidator.getPlaylist, playlistController.getPlaylist);
 router.put('/playlist/',
 playlistValidator.addEntry, playlistController.addEntry);
 
+router.get('/playlist/:username/:name',  
+playlistValidator.playlist, playlistController.playlist);
+
 module.exports = router;

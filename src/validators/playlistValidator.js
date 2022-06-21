@@ -23,4 +23,11 @@ addEntry: celebrate({
     listName: Joi.string().max(60).required(),
   }),
 }),
+
+playlist:  celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    username: Joi.string().max(30).required(),
+    name: Joi.string().max(60).required(),
+  }),
+}),
 }
